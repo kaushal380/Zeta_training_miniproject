@@ -1,0 +1,10 @@
+{
+  "f475fe87-bb1e-473d-9432-cbb177bb0d01" : {
+    "password" : "password123",
+    "user" : {
+      "id" : "f475fe87-bb1e-473d-9432-cbb177bb0d01",
+      "email" : "tejas@gmail.com",
+      "role" : "ADMIN"
+    }
+  }
+}
