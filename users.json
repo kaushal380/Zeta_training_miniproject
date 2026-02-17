@@ -2,32 +2,68 @@
   "login@gmail.com" : {
     "password" : "password",
     "user" : {
-      "id" : "fdb721cb-48f2-4e9d-a06f-b68e56ca7a8f",
+      "id" : "e0f4d992-0234-4974-a40b-1303e647f60a",
+      "name" : "Kaushal",
+      "phoneNumber" : "9999999999",
       "email" : "login@gmail.com",
+      "dateOfBirth" : [ 2000, 1, 1 ],
+      "address" : {
+        "city" : "Bangalore",
+        "state" : "Karnataka",
+        "zipCode" : "560001",
+        "country" : "India"
+      },
       "role" : "ADMIN"
     }
   },
   "dup@gmail.com" : {
     "password" : "password",
     "user" : {
-      "id" : "1fa1edc6-0592-430e-ac60-6cb5f79ad107",
+      "id" : "891a9c59-b83a-4068-8bbd-981540db5048",
+      "name" : "Kaushal",
+      "phoneNumber" : "9999999999",
       "email" : "dup@gmail.com",
+      "dateOfBirth" : [ 2000, 1, 1 ],
+      "address" : {
+        "city" : "Bangalore",
+        "state" : "Karnataka",
+        "zipCode" : "560001",
+        "country" : "India"
+      },
       "role" : "PROJECT_MANAGER"
     }
   },
   "test@gmail.com" : {
     "password" : "password",
     "user" : {
-      "id" : "bba1df02-ec77-4978-928b-9b6acbeed5b9",
+      "id" : "d20472cd-cc3e-42b7-a0b9-15838ba733b4",
+      "name" : "Kaushal",
+      "phoneNumber" : "9999999999",
       "email" : "test@gmail.com",
+      "dateOfBirth" : [ 2000, 1, 1 ],
+      "address" : {
+        "city" : "Bangalore",
+        "state" : "Karnataka",
+        "zipCode" : "560001",
+        "country" : "India"
+      },
       "role" : "PROJECT_MANAGER"
     }
   },
   "wrongpass@gmail.com" : {
     "password" : "password",
     "user" : {
-      "id" : "f6ede527-5068-496d-aa9d-33143ef09586",
+      "id" : "a0842e23-6ccd-4dce-a051-3d75d401abd9",
+      "name" : "Kaushal",
+      "phoneNumber" : "9999999999",
       "email" : "wrongpass@gmail.com",
+      "dateOfBirth" : [ 2000, 1, 1 ],
+      "address" : {
+        "city" : "Bangalore",
+        "state" : "Karnataka",
+        "zipCode" : "560001",
+        "country" : "India"
+      },
       "role" : "ADMIN"
     }
   }

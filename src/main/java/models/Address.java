@@ -14,6 +14,9 @@ public class Address {
         this.country = country;
     }
 
+    public Address() {
+    }
+
     public String getCity() { return city; }
     public String getState() { return state; }
     public String getZipCode() { return zipCode; }
