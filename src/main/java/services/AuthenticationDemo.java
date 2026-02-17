@@ -14,13 +14,10 @@ public class AuthenticationDemo {
 
         Scanner scanner = new Scanner(System.in);
 
-        // Create repository
-        UserRepository userRepository = new UserRepository();
+        UserRepository userRepository = new UserRepository("users.json");
 
-        // Create authentication service
         AuthenticationService authService = new AuthenticationService(userRepository);
 
-        // Create address
         Address address = new Address(
                 "Bangalore",
                 "Karnataka",
@@ -28,20 +25,18 @@ public class AuthenticationDemo {
                 "India"
         );
 
-        // Register user
         boolean isRegistered = authService.register(
-                "Tejas H S",
-                "9876543210",
+                "tejas H S",
+                "1234567890",
                 "tejas@gmail.com",
                 "password123",
-                LocalDate.of(2002, 4, 12),
+                LocalDate.of(2005, 6, 7),
                 address,
-                UserRole.ADMIN
+                UserRole.PROJECT_MANAGER
         );
 
         System.out.println("\n========== LOGIN ==========");
 
-        // --------- LOGIN INPUT ----------
         System.out.print("Enter Email: ");
         String email = scanner.nextLine();
 
@@ -56,8 +51,6 @@ public class AuthenticationDemo {
         } else {
             System.out.println("Login failed.");
         }
-
         scanner.close();
-
     }
 }

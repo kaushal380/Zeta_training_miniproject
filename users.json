@@ -1,9 +1,33 @@
 {
-  "f475fe87-bb1e-473d-9432-cbb177bb0d01" : {
-    "password" : "password123",
+  "login@gmail.com" : {
+    "password" : "password",
     "user" : {
-      "id" : "f475fe87-bb1e-473d-9432-cbb177bb0d01",
-      "email" : "tejas@gmail.com",
+      "id" : "e4b2c547-15cc-424c-9780-ac92c575f5e9",
+      "email" : "login@gmail.com",
+      "role" : "ADMIN"
+    }
+  },
+  "dup@gmail.com" : {
+    "password" : "password",
+    "user" : {
+      "id" : "e995c401-0be7-4fe6-907c-e61b89c80c13",
+      "email" : "dup@gmail.com",
+      "role" : "PROJECT_MANAGER"
+    }
+  },
+  "test@gmail.com" : {
+    "password" : "password",
+    "user" : {
+      "id" : "41925ca0-c760-4405-bd9b-645caab28a87",
+      "email" : "test@gmail.com",
+      "role" : "PROJECT_MANAGER"
+    }
+  },
+  "wrongpass@gmail.com" : {
+    "password" : "password",
+    "user" : {
+      "id" : "a9e49538-c0a0-4e2a-b673-ed21501ede30",
+      "email" : "wrongpass@gmail.com",
       "role" : "ADMIN"
     }
   }

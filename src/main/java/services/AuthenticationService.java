@@ -9,14 +9,15 @@ import models.UserCredential;
 import models.enums.UserRole;
 import repositories.UserRepository;
 
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public class AuthenticationService {
 
+    private static final Logger logger = Logger.getLogger(AuthenticationService.class.getName());
     private static final String FILE_PATH = "users.json";
+
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
 
@@ -36,45 +37,36 @@ public class AuthenticationService {
                             UserRole role) {
 
         String userId = UUID.randomUUID().toString();
-
         User user = new User(userId, name, phone, email, dob, address, role);
         UserCredential credential = new UserCredential(password, user);
 
-        boolean added = userRepository.addUser(userId, credential);
+        boolean added = userRepository.addUser(email, credential);
 
         if (added) {
-            saveToFile();
-            System.out.println("User registered successfully with ID: " + userId);
+            logger.info("User registered successfully with email: " + email);
             return true;
         }
 
-        System.out.println("Registration failed.");
+        logger.warning("Registration failed for email: " + email);
         return false;
     }
 
-    public User login(String userId, String password) {
+    public User login(String email, String password) {
 
-        UserCredential credential = userRepository.getUser(userId);
+        UserCredential credential = userRepository.getUser(email);
 
         if (credential == null) {
-            System.out.println("User not found.");
+            logger.warning("Login failed - User not found: " + email);
             return null;
         }
 
         if (!credential.getPassword().equals(password)) {
-            System.out.println("Invalid password.");
+            logger.warning("Login failed - Invalid password for: " + email);
             return null;
         }
 
-        System.out.println("Login successful.");
+        logger.info("Login successful for: " + email);
         return credential.getUser();
     }
 
-    private void saveToFile() {
-        try {
-            objectMapper.writeValue(new File(FILE_PATH), userRepository.getAllUsers());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
