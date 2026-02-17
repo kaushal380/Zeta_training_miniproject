@@ -12,19 +12,17 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TestUserRepository {
+public class TestUserRepository {
 
     private static final String TEST_FILE = "test_users.json";
     private UserRepository repository;
 
     @BeforeEach
     void setUp() {
-        // Delete test file before each run
         File file = new File(TEST_FILE);
         if (file.exists()) {
             file.delete();
         }
-
         repository = new UserRepository(TEST_FILE);
     }
 
@@ -92,10 +90,8 @@ class TestUserRepository {
 
     @Test
     void testLoadFromFileWhenFileExists() {
-        // Add user and force save
         repository.addUser("load@gmail.com", createCredential("load@gmail.com"));
 
-        // Create new repository instance (should load existing file)
         UserRepository newRepo = new UserRepository(TEST_FILE);
 
         assertNotNull(newRepo.getUser("load@gmail.com"));
@@ -115,7 +111,6 @@ class TestUserRepository {
     @Test
     void testSaveToFileFailure() {
 
-        // Invalid path to force failure
         UserRepository badRepo = new UserRepository("/invalid/path/users.json");
 
         UserCredential credential = createCredential("fail@gmail.com");
@@ -124,4 +119,31 @@ class TestUserRepository {
             badRepo.addUser("fail@gmail.com", credential);
         });
     }
+    @Test
+    void testDefaultConstructor() {
+        File file = new File("users.json");
+        if (file.exists()) {
+            file.delete();
+        }
+        UserRepository repo = new UserRepository();
+        assertNotNull(repo);
+        assertTrue(repo.getAllUsers().isEmpty());
+
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
+    @Test
+    void testLoadFromFileWhenFileIsEmpty() throws Exception {
+
+        File file = new File(TEST_FILE);
+        file.createNewFile();
+
+        assertEquals(0, file.length());
+
+        UserRepository repo = new UserRepository(TEST_FILE);
+        assertTrue(repo.getAllUsers().isEmpty());
+    }
+
 }

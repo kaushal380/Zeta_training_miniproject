@@ -74,7 +74,6 @@ public class UserRepository {
             return;
         }
 
-
         try {
             Map<String, UserCredential> fileUsers =
                     objectMapper.readValue(

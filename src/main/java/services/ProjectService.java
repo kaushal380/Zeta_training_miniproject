@@ -12,6 +12,7 @@ import repositories.ProjectRepository;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ProjectService {
@@ -24,6 +25,8 @@ public class ProjectService {
     public ProjectService(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
     }
+
+
 
     public boolean createProject(User user,
                                  String name,
@@ -54,6 +57,8 @@ public class ProjectService {
 
         return projectRepository.addProject(projectId, project);
     }
+
+
 
     public boolean updateProject(User user,
                                  String projectId,
@@ -103,6 +108,28 @@ public class ProjectService {
         return true;
     }
 
+
+
+    public boolean deleteProject(User user, String projectId) {
+
+        if (user.getRole() != UserRole.ADMIN) {
+
+            logger.warning("Unauthorized delete attempt by: " + user.getEmail());
+            throw new RuntimeException("Only Admin or Manager can delete projects");
+        }
+
+        boolean deleted = projectRepository.deleteProject(projectId);
+
+        if (deleted) {
+            logger.info("Project deleted: " + projectId);
+            return true;
+        }
+
+        logger.warning("Failed to delete project: " + projectId);
+        return false;
+    }
+
+
     public boolean updateProjectStatus(User user,
                                        String projectId,
                                        ProjectStatus status) {
@@ -118,6 +145,7 @@ public class ProjectService {
 
         project.setStatus(status);
 
+
         if (status == ProjectStatus.COMPLETED) {
             project.setEndDate(LocalDate.now());
         }
@@ -126,14 +154,6 @@ public class ProjectService {
         return true;
     }
 
-    public boolean deleteProject(User user, String projectId) {
-
-        if (user.getRole() != UserRole.ADMIN) {
-            throw new RuntimeException("Only Admin can delete projects");
-        }
-
-        return projectRepository.deleteProject(projectId);
-    }
 
     public Project viewProject(String projectId) {
         return projectRepository.getProjectById(projectId);
