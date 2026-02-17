@@ -122,8 +122,7 @@ public class ProjectService {
 
     public boolean deleteProject(User user, String projectId) {
 
-        if (user.getRole() != UserRole.ADMIN &&
-                user.getRole() != UserRole.PROJECT_MANAGER) {
+        if (user.getRole() != UserRole.ADMIN) {
 
             logger.warning("Unauthorized delete attempt by: " + user.getEmail());
             throw new RuntimeException("Only Admin or Manager can delete projects");
