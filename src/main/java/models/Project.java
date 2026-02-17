@@ -1,6 +1,7 @@
 package models;
 
 import models.enums.ProjectStatus;
+import models.enums.ProjectType;
 
 import java.time.LocalDate;
 
@@ -12,12 +13,14 @@ public class Project {
     private LocalDate startDate;
     private LocalDate endDate;
     private ProjectStatus status;
-    private String type;
-    private double estimatedCost;
+    private ProjectType type;
+    private Double estimatedCost;
+    private Address location;
 
-    // Default constructor (required for Jackson)
     public Project() {
     }
+
+
 
     public Project(String id,
                    String name,
@@ -25,8 +28,9 @@ public class Project {
                    LocalDate startDate,
                    LocalDate endDate,
                    ProjectStatus status,
-                   String type,
-                   double estimatedCost) {
+                   ProjectType type,
+                   Address location,
+                   Double estimatedCost) {
 
         this.id = id;
         this.name = name;
@@ -36,7 +40,13 @@ public class Project {
         this.status = status;
         this.type = type;
         this.estimatedCost = estimatedCost;
+        this.location = location;
     }
+
+
+    public Address getLocation() {return location;}
+
+    public void setLocation(Address location) {this.location = location;}
 
     public String getId() {
         return id;
@@ -86,19 +96,19 @@ public class Project {
         this.status = status;
     }
 
-    public String getType() {
+    public ProjectType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(ProjectType type) {
         this.type = type;
     }
 
-    public double getEstimatedCost() {
+    public Double getEstimatedCost() {
         return estimatedCost;
     }
 
-    public void setEstimatedCost(double estimatedCost) {
+    public void setEstimatedCost(Double estimatedCost) {
         this.estimatedCost = estimatedCost;
     }
 
@@ -107,8 +117,14 @@ public class Project {
         return "Project{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", type=" + type +
                 ", status=" + status +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
                 ", estimatedCost=" + estimatedCost +
+                ", location=" + location +
                 '}';
     }
+
 }

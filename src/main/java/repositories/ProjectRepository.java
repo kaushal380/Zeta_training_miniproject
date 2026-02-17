@@ -19,7 +19,6 @@ public class ProjectRepository {
             Logger.getLogger(ProjectRepository.class.getName());
 
     private final String filePath;
-
     private final Map<String, Project> projects =
             new ConcurrentHashMap<>();
 
@@ -93,13 +92,8 @@ public class ProjectRepository {
 
         File file = new File(filePath);
 
-        if (!file.exists()) {
-            logger.info("Project file not found. Starting empty.");
-            return;
-        }
-
-        if (file.length() == 0) {
-            logger.warning("Project file is empty. Starting empty.");
+        if (!file.exists() || file.length() == 0) {
+            logger.info("Project file missing or empty. Starting clean.");
             return;
         }
 
@@ -111,13 +105,11 @@ public class ProjectRepository {
                     );
 
             projects.putAll(fileProjects);
-
-            logger.info("Loaded " + fileProjects.size() + " projects from file.");
+            logger.info("Loaded " + fileProjects.size() + " projects.");
 
         } catch (IOException e) {
             logger.log(Level.SEVERE,
                     "Failed to load projects from file: " + filePath, e);
-
             throw new RuntimeException("ProjectRepository initialization failed", e);
         }
     }
@@ -126,12 +118,9 @@ public class ProjectRepository {
 
         try {
             objectMapper.writeValue(new File(filePath), projects);
-            logger.info("Projects saved successfully.");
-
         } catch (IOException e) {
             logger.log(Level.SEVERE,
                     "Failed to save projects to file: " + filePath, e);
-
             throw new RuntimeException("Failed to persist projects", e);
         }
     }

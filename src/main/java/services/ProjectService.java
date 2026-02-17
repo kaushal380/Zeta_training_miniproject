@@ -1,8 +1,11 @@
 package services;
 
+import dto.ProjectUpdateRequest;
+import models.Address;
 import models.Project;
 import models.User;
 import models.enums.ProjectStatus;
+import models.enums.ProjectType;
 import models.enums.UserRole;
 import repositories.ProjectRepository;
 
@@ -27,49 +30,38 @@ public class ProjectService {
                                  String description,
                                  LocalDate startDate,
                                  LocalDate endDate,
-                                 String type,
+                                 ProjectType type,
+                                 Address location,
                                  double estimatedCost) {
 
         if (user.getRole() != UserRole.ADMIN) {
-            logger.warning("Unauthorized project creation attempt by: " + user.getEmail());
             throw new RuntimeException("Only Admin can create projects");
         }
 
         String projectId = UUID.randomUUID().toString();
 
-        Project project = new Project();
-        project.setId(projectId);
-        project.setName(name);
-        project.setDescription(description);
-        project.setStartDate(startDate);
-        project.setEndDate(endDate);
-        project.setType(type);
-        project.setEstimatedCost(estimatedCost);
-        project.setStatus(ProjectStatus.UPCOMING);
+        Project project = new Project(
+                projectId,
+                name,
+                description,
+                startDate,
+                endDate,
+                ProjectStatus.UPCOMING,
+                type,
+                location,
+                estimatedCost
+        );
 
-        boolean added = projectRepository.addProject(projectId, project);
-
-        if (added) {
-            logger.info("Project created successfully: " + projectId);
-            return true;
-        }
-
-        logger.warning("Failed to create project: " + projectId);
-        return false;
+        return projectRepository.addProject(projectId, project);
     }
 
     public boolean updateProject(User user,
                                  String projectId,
-                                 String name,
-                                 String description,
-                                 LocalDate startDate,
-                                 LocalDate endDate,
-                                 double estimatedCost) {
+                                 ProjectUpdateRequest request) {
 
         if (user.getRole() != UserRole.ADMIN &&
                 user.getRole() != UserRole.PROJECT_MANAGER) {
 
-            logger.warning("Unauthorized update attempt by: " + user.getEmail());
             throw new RuntimeException("Only Admin or Manager can update projects");
         }
 
@@ -80,11 +72,30 @@ public class ProjectService {
             return false;
         }
 
-        project.setName(name);
-        project.setDescription(description);
-        project.setStartDate(startDate);
-        project.setEndDate(endDate);
-        project.setEstimatedCost(estimatedCost);
+        if (project.getStatus() == ProjectStatus.COMPLETED) {
+            throw new RuntimeException("Cannot modify completed project");
+        }
+
+        if (request.getName() != null)
+            project.setName(request.getName());
+
+        if (request.getDescription() != null)
+            project.setDescription(request.getDescription());
+
+        if (request.getStartDate() != null)
+            project.setStartDate(request.getStartDate());
+
+        if (request.getEndDate() != null)
+            project.setEndDate(request.getEndDate());
+
+        if (request.getEstimatedCost() != null)
+            project.setEstimatedCost(request.getEstimatedCost());
+
+        if (request.getType() != null)
+            project.setType(request.getType());
+
+        if (request.getLocation() != null)
+            project.setLocation(request.getLocation());
 
         projectRepository.updateProject(projectId, project);
 
@@ -97,16 +108,13 @@ public class ProjectService {
                                        ProjectStatus status) {
 
         if (user.getRole() != UserRole.PROJECT_MANAGER) {
-            logger.warning("Unauthorized status update attempt by: " + user.getEmail());
-            throw new RuntimeException("Only Project Manager can update project status");
+            throw new RuntimeException("Only Project Manager can update status");
         }
 
         Project project = projectRepository.getProjectById(projectId);
 
-        if (project == null) {
-            logger.warning("Project not found: " + projectId);
+        if (project == null)
             return false;
-        }
 
         project.setStatus(status);
 
@@ -115,28 +123,16 @@ public class ProjectService {
         }
 
         projectRepository.updateProject(projectId, project);
-
-        logger.info("Project status updated to " + status + " for project: " + projectId);
         return true;
     }
 
     public boolean deleteProject(User user, String projectId) {
 
         if (user.getRole() != UserRole.ADMIN) {
-
-            logger.warning("Unauthorized delete attempt by: " + user.getEmail());
-            throw new RuntimeException("Only Admin or Manager can delete projects");
+            throw new RuntimeException("Only Admin can delete projects");
         }
 
-        boolean deleted = projectRepository.deleteProject(projectId);
-
-        if (deleted) {
-            logger.info("Project deleted: " + projectId);
-            return true;
-        }
-
-        logger.warning("Failed to delete project: " + projectId);
-        return false;
+        return projectRepository.deleteProject(projectId);
     }
 
     public Project viewProject(String projectId) {
