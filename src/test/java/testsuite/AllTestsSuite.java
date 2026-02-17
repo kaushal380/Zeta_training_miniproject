@@ -11,5 +11,6 @@ import testServices.TestAuthenticationService;
         TestUserRepository.class,
         TestAuthenticationService.class
 })
+
 public class AllTestsSuite {
 }
