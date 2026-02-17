@@ -12,7 +12,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TestUserRepository {
+public class TestUserRepository {
 
     private static final String TEST_FILE = "test_users.json";
     private UserRepository repository;
