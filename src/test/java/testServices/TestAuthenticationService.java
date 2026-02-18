@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import repositories.UserRepository;
 import services.AuthenticationService;
 
-import java.math.BigInteger;
+import java.io.File;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,11 +17,16 @@ public class TestAuthenticationService {
 
     private AuthenticationService authService;
     private UserRepository userRepository;
-
     private Address address;
 
     @BeforeEach
     void setUp() {
+
+        File file = new File("users.json");
+        if (file.exists()) {
+            file.delete();
+        }
+
         userRepository = new UserRepository("users.json");
         authService = new AuthenticationService(userRepository);
 
@@ -35,7 +40,8 @@ public class TestAuthenticationService {
 
     @Test
     void testRegisterSuccess() {
-        boolean result = authService.register(
+
+        User user = authService.register(
                 "Kaushal",
                 "9999999999",
                 "test@gmail.com",
@@ -45,15 +51,16 @@ public class TestAuthenticationService {
                 UserRole.PROJECT_MANAGER
         );
 
-        assertTrue(result);
+        assertNotNull(user);
         assertNotNull(userRepository.getUser("test@gmail.com"));
     }
 
     @Test
     void testRegisterDuplicateEmail() {
+
         authService.register(
                 "Kaushal",
-                BigInteger.valueOf(1234567890),
+                "1234567890",
                 "dup@gmail.com",
                 "password",
                 LocalDate.of(2000, 1, 1),
@@ -61,7 +68,7 @@ public class TestAuthenticationService {
                 UserRole.PROJECT_MANAGER
         );
 
-        boolean secondAttempt = authService.register(
+        User secondAttempt = authService.register(
                 "Another",
                 "1888888888",
                 "dup@gmail.com",
@@ -71,14 +78,15 @@ public class TestAuthenticationService {
                 UserRole.ADMIN
         );
 
-        assertFalse(secondAttempt);
+        assertNull(secondAttempt);
     }
 
     @Test
     void testLoginSuccess() {
+
         authService.register(
                 "Kaushal",
-                9999999999,
+                "9999999999",
                 "login@gmail.com",
                 "password",
                 LocalDate.of(2000, 1, 1),
@@ -94,6 +102,7 @@ public class TestAuthenticationService {
 
     @Test
     void testLoginWrongPassword() {
+
         authService.register(
                 "Kaushal",
                 "9999999999",
@@ -111,6 +120,7 @@ public class TestAuthenticationService {
 
     @Test
     void testLoginUserNotFound() {
+
         User user = authService.login("notfound@gmail.com", "password");
         assertNull(user);
     }

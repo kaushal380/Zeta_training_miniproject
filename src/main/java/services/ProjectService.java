@@ -41,29 +41,14 @@ public class ProjectService {
 
         String projectId = UUID.randomUUID().toString();
 
-        Project project = new Project(
-                projectId,
-                name,
-                description,
-                startDate,
-                endDate,
-                ProjectStatus.UPCOMING,
-                type,
-                location,
-                estimatedCost
-        );
+        Project project = new Project(projectId, name, description, startDate, endDate, ProjectStatus.UPCOMING, type, location, estimatedCost);
 
         return projectRepository.addProject(projectId, project);
     }
 
+    public boolean updateProject(User user, String projectId, ProjectUpdateRequest request) {
 
-
-    public boolean updateProject(User user,
-                                 String projectId,
-                                 ProjectUpdateRequest request) {
-
-        if (user.getRole() != UserRole.ADMIN &&
-                user.getRole() != UserRole.PROJECT_MANAGER) {
+        if (user.getRole() != UserRole.ADMIN && user.getRole() != UserRole.PROJECT_MANAGER) {
 
             throw new RuntimeException("Only Admin or Manager can update projects");
         }
@@ -105,8 +90,6 @@ public class ProjectService {
         logger.info("Project updated successfully: " + projectId);
         return true;
     }
-
-
 
     public boolean deleteProject(User user, String projectId) {
 

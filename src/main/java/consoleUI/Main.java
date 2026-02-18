@@ -1,37 +1,84 @@
 package consoleUI;
 
-import models.Address;
 import models.User;
-import models.enums.ProjectType;
 import models.enums.UserRole;
+import repositories.ProjectRepository;
+import repositories.TaskRepository;
 import repositories.UserRepository;
-import services.AuthenticationService;
+import services.*;
 
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-    static Scanner scanner = new Scanner(System.in);
 
-    static UserRepository userRepository = new UserRepository("users.json");
-    static AuthenticationService authService = new AuthenticationService(userRepository);
+    private static final Scanner scanner = new Scanner(System.in);
 
+    // Repositories
+    private static final UserRepository userRepository =
+            new UserRepository("users.json");
 
+    private static final ProjectRepository projectRepository =
+            new ProjectRepository("projects.json");
+
+    private static final TaskRepository taskRepository =
+            new TaskRepository("tasks.json");
+
+    // Services
+    private static final AuthenticationService authService =
+            new AuthenticationService(userRepository);
+
+    private static final ProjectService projectService =
+            new ProjectService(projectRepository);
+
+    private static final TaskService taskService =
+            new TaskService(taskRepository);
+
+    private static final AssignmentService assignmentService =
+            new AssignmentService(projectRepository, userRepository);
 
     public static void main(String[] args) {
 
+        System.out.println("===== BUILDER PORTFOLIO APPLICATION =====");
 
-        System.out.println("Welcome to the builder portfolio app");
+        User user =
+                AuthenticationDashboard.authenticate(authService, scanner);
 
-        User user = AuthenticationDashboard.authenticate(authService, scanner);
-
-        if (user == null){
-            System.exit(0);
+        if (user == null) {
+            System.out.println("Authentication failed.");
+            return;
         }
+
+        System.out.println("\nLogin Successful!");
         System.out.println(user);
 
+        switch (user.getRole()) {
 
+            case ADMIN ->
+                    AdminDashboard.start(
+                            user,
+                            projectService,
+                            assignmentService,
+                            scanner
+                    );
+
+            case PROJECT_MANAGER ->
+                    ProjectManagerDashboard.start(
+                            user,
+                            projectService,
+                            taskService,
+                            assignmentService,
+                            scanner
+                    );
+
+            case BUILDER ->
+                    BuilderDashboard.start(
+                            user,
+                            taskService,
+                            scanner
+                    );
+
+            default ->
+                    System.out.println("Role not supported.");
+        }
     }
 }
