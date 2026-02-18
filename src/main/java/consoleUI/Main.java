@@ -13,35 +13,25 @@ public class Main {
 
     private static final Scanner scanner = new Scanner(System.in);
 
-    // Repositories
-    private static final UserRepository userRepository =
-            new UserRepository("users.json");
+    private static final UserRepository userRepository = new UserRepository("users.json");
 
-    private static final ProjectRepository projectRepository =
-            new ProjectRepository("projects.json");
+    private static final ProjectRepository projectRepository = new ProjectRepository("projects.json");
 
-    private static final TaskRepository taskRepository =
-            new TaskRepository("tasks.json");
+    private static final TaskRepository taskRepository = new TaskRepository("tasks.json");
 
-    // Services
-    private static final AuthenticationService authService =
-            new AuthenticationService(userRepository);
+    private static final AuthenticationService authService = new AuthenticationService(userRepository);
 
-    private static final ProjectService projectService =
-            new ProjectService(projectRepository);
+    private static final ProjectService projectService = new ProjectService(projectRepository);
 
-    private static final TaskService taskService =
-            new TaskService(taskRepository);
+    private static final TaskService taskService = new TaskService(taskRepository);
 
-    private static final AssignmentService assignmentService =
-            new AssignmentService(projectRepository, userRepository);
+    private static final AssignmentService assignmentService = new AssignmentService(projectRepository, userRepository);
 
     public static void main(String[] args) {
 
         System.out.println("===== BUILDER PORTFOLIO APPLICATION =====");
 
-        User user =
-                AuthenticationDashboard.authenticate(authService, scanner);
+        User user = AuthenticationDashboard.authenticate(authService, scanner);
 
         if (user == null) {
             System.out.println("Authentication failed.");
@@ -53,13 +43,13 @@ public class Main {
 
         switch (user.getRole()) {
 
-            case ADMIN ->
-                    AdminDashboard.start(
-                            user,
-                            projectService,
-                            assignmentService,
-                            scanner
-                    );
+//            case ADMIN ->
+//                    AdminDashboard.start(
+//                            user,
+//                            projectService,
+//                            assignmentService,
+//                            scanner
+//                    );
 
             case PROJECT_MANAGER ->
                     ProjectManagerDashboard.start(
@@ -74,6 +64,7 @@ public class Main {
                     BuilderDashboard.start(
                             user,
                             taskService,
+                            projectService,
                             scanner
                     );
 

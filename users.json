@@ -15,5 +15,22 @@
       },
       "role" : "CLIENT"
     }
+  },
+  "tejas@gmail.com" : {
+    "password" : "kaushal",
+    "user" : {
+      "id" : "9e3415b7-7642-460e-bb2d-633a08a824f8",
+      "name" : "kaushal",
+      "phoneNumber" : "1234567890",
+      "email" : "tejas@gmail.com",
+      "dateOfBirth" : [ 2005, 6, 7 ],
+      "address" : {
+        "city" : "Blr",
+        "state" : "KA",
+        "zipCode" : 10001,
+        "country" : "India"
+      },
+      "role" : "PROJECT_MANAGER"
+    }
   }
 }
