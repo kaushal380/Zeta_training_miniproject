@@ -50,7 +50,7 @@ public class TaskDemo {
 
         System.out.println("\n===== CREATE TASK =====");
 
-        boolean created = taskService.createTask(manager, "Foundation Work", LocalDate.now(), LocalDate.now().plusDays(7), "P1");
+        boolean created = taskService.createTask(manager, "Foundation Work","Foundation phase work", LocalDate.now(), LocalDate.now().plusDays(7), "P1");
 
         System.out.println("Task Created: " + created);
 

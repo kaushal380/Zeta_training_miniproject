@@ -13,7 +13,6 @@ public class Main {
 
     private static final Scanner scanner = new Scanner(System.in);
 
-    // Repositories
     private static final UserRepository userRepository =
             new UserRepository("users.json");
 
@@ -23,7 +22,6 @@ public class Main {
     private static final TaskRepository taskRepository =
             new TaskRepository("tasks.json");
 
-    // Services
     private static final AuthenticationService authService =
             new AuthenticationService(userRepository);
 
@@ -58,18 +56,17 @@ public class Main {
         switch (user.getRole()) {
 
             case ADMIN ->
-                    new AdminDashboard(projectService, authService, assignmentService, userService,  scanner).start(
-                            user
-                    );
+                    new AdminDashboard(projectService, authService, assignmentService, userService,  scanner).start(user);
 
             case PROJECT_MANAGER ->
-                    ProjectManagerDashboard.start(
-                            user,
+                    new ProjectManagerDashboard(
                             projectService,
                             taskService,
                             assignmentService,
+                            userService,
                             scanner
-                    );
+                    ).start(user);
+
 
             case BUILDER ->
                     BuilderDashboard.start(

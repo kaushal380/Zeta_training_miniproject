@@ -8,6 +8,7 @@ import java.time.LocalDate;
 public class Task {
 
     private String id;
+    private String taskName;
     private String description;
     private TaskStatus status;
     private LocalDate startDate;
@@ -19,9 +20,18 @@ public class Task {
     public Task() {
     }
 
-    public Task(String id, String description, TaskStatus status, LocalDate startDate, LocalDate endDate, Priority priority, String assignedBuilderId, String projectId) {
+    public Task(String id,
+                String taskName,
+                String description,
+                TaskStatus status,
+                LocalDate startDate,
+                LocalDate endDate,
+                Priority priority,
+                String assignedBuilderId,
+                String projectId) {
 
         this.id = id;
+        this.taskName = taskName;
         this.description = description;
         this.status = status;
         this.startDate = startDate;
@@ -33,6 +43,10 @@ public class Task {
 
     public String getId() {
         return id;
+    }
+
+    public String getTaskName() {
+        return taskName;
     }
 
     public String getDescription() {
@@ -47,12 +61,12 @@ public class Task {
         return startDate;
     }
 
-    public Priority getPriority() {
-        return priority;
-    }
-
     public LocalDate getEndDate() {
         return endDate;
+    }
+
+    public Priority getPriority() {
+        return priority;
     }
 
     public String getAssignedBuilderId() {
@@ -65,6 +79,10 @@ public class Task {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
     }
 
     public void setDescription(String description) {
@@ -87,12 +105,11 @@ public class Task {
         this.priority = priority;
     }
 
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
     public void setAssignedBuilderId(String assignedBuilderId) {
         this.assignedBuilderId = assignedBuilderId;
     }
 
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
 }
