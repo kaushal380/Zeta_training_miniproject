@@ -4,6 +4,8 @@ import models.enums.ProjectStatus;
 import models.enums.ProjectType;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Project {
 
@@ -16,10 +18,12 @@ public class Project {
     private ProjectType type;
     private Double estimatedCost;
     private Address location;
+    private String managerId;
+
+    private List<String> builderIds = new ArrayList<>();
 
     public Project() {
     }
-
 
     public Project(String id,
                    String name,
@@ -40,7 +44,9 @@ public class Project {
         this.type = type;
         this.estimatedCost = estimatedCost;
         this.location = location;
+        this.builderIds = new ArrayList<>();
     }
+
 
 
     public Address getLocation() {return location;}
@@ -110,6 +116,23 @@ public class Project {
     public void setEstimatedCost(Double estimatedCost) {
         this.estimatedCost = estimatedCost;
     }
+
+    public String getManagerId() {
+        return managerId;
+    }
+
+    public void setManagerId(String managerId) {
+        this.managerId = managerId;
+    }
+
+    public List<String> getBuilderIds() {
+        return builderIds;
+    }
+
+    public void setBuilderIds(List<String> builderIds) {
+        this.builderIds = builderIds;
+    }
+
 
     @Override
     public String toString() {
