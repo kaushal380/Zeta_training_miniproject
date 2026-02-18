@@ -15,18 +15,20 @@ import java.util.logging.Logger;
 
 public class UserRepository {
 
-    private static final Logger logger =
-            Logger.getLogger(UserRepository.class.getName());
+    private static final Logger logger = Logger.getLogger(UserRepository.class.getName());
 
     private final String filePath;
-    private final Map<String, UserCredential> users =
-            new ConcurrentHashMap<>();
+
+    private final Map<String, UserCredential> users = new ConcurrentHashMap<>();
 
     private final ObjectMapper objectMapper;
 
-    public UserRepository(String file_path) {
+    private final Object lock = new Object();
 
-        this.filePath = file_path;
+    public UserRepository(String filePath) {
+
+        this.filePath = filePath;
+
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -34,22 +36,25 @@ public class UserRepository {
         loadFromFile();
     }
 
-    public UserRepository(){
+    public UserRepository() {
         this("users.json");
     }
 
     public boolean addUser(String email, UserCredential credential) {
 
-        if (users.containsKey(email)) {
-            logger.warning("Attempt to register duplicate email: " + email);
-            return false;
+        synchronized (lock) {
+
+            if (users.containsKey(email)) {
+                logger.warning("Attempt to register duplicate email: " + email);
+                return false;
+            }
+
+            users.put(email, credential);
+            saveToFile();
+
+            logger.info("User added to repository: " + email);
+            return true;
         }
-
-        users.put(email, credential);
-        logger.info("User added to repository: " + email);
-
-        saveToFile();
-        return true;
     }
 
     public UserCredential getUser(String email) {
@@ -64,32 +69,25 @@ public class UserRepository {
 
         File file = new File(filePath);
 
-        if (!file.exists()) {
-            logger.info("File not found. Starting with empty repository.");
+        if (!file.exists() || file.length() == 0) {
+            logger.info("File not found or empty. Starting clean.");
             return;
         }
 
-        if (file.length() == 0) {
-            logger.warning("File exists but is empty. Starting with empty repository.");
-            return;
-        }
+        synchronized (lock) {
+            try {
+                Map<String, UserCredential> fileUsers = objectMapper.readValue(file, new TypeReference<Map<String, UserCredential>>() {
+                });
 
-        try {
-            Map<String, UserCredential> fileUsers =
-                    objectMapper.readValue(
-                            file,
-                            new TypeReference<Map<String, UserCredential>>() {}
-                    );
+                users.putAll(fileUsers);
 
-            users.putAll(fileUsers);
+                logger.info("Loaded " + fileUsers.size() + " users.");
 
-            logger.info("Loaded " + fileUsers.size() + " users from file.");
+            } catch (IOException e) {
+                logger.log(Level.SEVERE, "Failed to load users from file: " + filePath, e);
 
-        } catch (IOException e) {
-            logger.log(Level.SEVERE,
-                    "Failed to load users from file: " + filePath, e);
-
-            throw new RuntimeException("UserRepository initialization failed", e);
+                throw new RuntimeException("UserRepository initialization failed", e);
+            }
         }
     }
 
@@ -97,11 +95,8 @@ public class UserRepository {
 
         try {
             objectMapper.writeValue(new File(filePath), users);
-            logger.info("Users saved successfully to file.");
-
         } catch (IOException e) {
-            logger.log(Level.SEVERE,
-                    "Failed to save users to file: " + filePath, e);
+            logger.log(Level.SEVERE, "Failed to save users to file: " + filePath, e);
 
             throw new RuntimeException("Failed to persist users", e);
         }
