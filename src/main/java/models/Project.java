@@ -47,8 +47,6 @@ public class Project {
         this.builderIds = new ArrayList<>();
     }
 
-
-
     public Address getLocation() {return location;}
 
     public void setLocation(Address location) {this.location = location;}
