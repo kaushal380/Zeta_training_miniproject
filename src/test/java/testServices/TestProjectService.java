@@ -36,6 +36,7 @@ public class TestProjectService {
 
     @BeforeEach
     void setUp() {
+
         projectService = new ProjectService(projectRepository);
 
         admin = new User();
@@ -53,19 +54,10 @@ public class TestProjectService {
 
     @Test
     void createProject_Admin_Success() {
-        when(projectRepository.addProject(anyString(), any(Project.class)))
-                .thenReturn(true);
 
-        boolean result = projectService.createProject(
-                admin,
-                "Test",
-                "Desc",
-                LocalDate.now(),
-                LocalDate.now().plusDays(10),
-                ProjectType.RESIDENTIAL,
-                new Address("City", "State", 123, "India"),
-                1000
-        );
+        when(projectRepository.addProject(anyString(), any(Project.class))).thenReturn(true);
+
+        boolean result = projectService.createProject(admin, "Test", "Desc", LocalDate.now(), LocalDate.now().plusDays(10), ProjectType.RESIDENTIAL, new Address("City", "State", "123", "India"), 1000);
 
         assertTrue(result);
         verify(projectRepository).addProject(anyString(), any(Project.class));
@@ -73,17 +65,8 @@ public class TestProjectService {
 
     @Test
     void createProject_NonAdmin_ThrowsException() {
-        assertThrows(RuntimeException.class, () ->
-                projectService.createProject(
-                        manager,
-                        "Test",
-                        "Desc",
-                        LocalDate.now(),
-                        LocalDate.now().plusDays(10),
-                        ProjectType.RESIDENTIAL,
-                        new Address("City", "State", 234, "India"),
-                        1000
-                ));
+
+        assertThrows(RuntimeException.class, () -> projectService.createProject(manager, "Test", "Desc", LocalDate.now(), LocalDate.now().plusDays(10), ProjectType.RESIDENTIAL, new Address("City", "State", "234", "India"), 1000));
     }
 
     @Test
@@ -92,11 +75,9 @@ public class TestProjectService {
         Project project = new Project();
         project.setStatus(ProjectStatus.UPCOMING);
 
-        when(projectRepository.getProjectById("1"))
-                .thenReturn(project);
+        when(projectRepository.getProjectById("1")).thenReturn(project);
 
-        when(projectRepository.updateProject(eq("1"), any(Project.class)))
-                .thenReturn(true);
+        when(projectRepository.updateProject(eq("1"), any(Project.class))).thenReturn(true);
 
         ProjectUpdateRequest request = new ProjectUpdateRequest();
         request.setName("Updated Name");
@@ -105,6 +86,7 @@ public class TestProjectService {
 
         assertTrue(result);
         assertEquals("Updated Name", project.getName());
+
         verify(projectRepository).updateProject(eq("1"), any(Project.class));
     }
 
@@ -114,11 +96,9 @@ public class TestProjectService {
         Project project = new Project();
         project.setStatus(ProjectStatus.UPCOMING);
 
-        when(projectRepository.getProjectById("1"))
-                .thenReturn(project);
+        when(projectRepository.getProjectById("1")).thenReturn(project);
 
-        when(projectRepository.updateProject(eq("1"), any(Project.class)))
-                .thenReturn(true);
+        when(projectRepository.updateProject(eq("1"), any(Project.class))).thenReturn(true);
 
         ProjectUpdateRequest request = new ProjectUpdateRequest();
         request.setEstimatedCost(5000.0);
@@ -131,17 +111,16 @@ public class TestProjectService {
 
     @Test
     void updateProject_UnauthorizedRole_ThrowsException() {
+
         ProjectUpdateRequest request = new ProjectUpdateRequest();
 
-        assertThrows(RuntimeException.class, () ->
-                projectService.updateProject(builder, "1", request));
+        assertThrows(RuntimeException.class, () -> projectService.updateProject(builder, "1", request));
     }
 
     @Test
     void updateProject_ProjectNotFound_ReturnsFalse() {
 
-        when(projectRepository.getProjectById("1"))
-                .thenReturn(null);
+        when(projectRepository.getProjectById("1")).thenReturn(null);
 
         ProjectUpdateRequest request = new ProjectUpdateRequest();
 
@@ -156,13 +135,11 @@ public class TestProjectService {
         Project project = new Project();
         project.setStatus(ProjectStatus.COMPLETED);
 
-        when(projectRepository.getProjectById("1"))
-                .thenReturn(project);
+        when(projectRepository.getProjectById("1")).thenReturn(project);
 
         ProjectUpdateRequest request = new ProjectUpdateRequest();
 
-        assertThrows(RuntimeException.class, () ->
-                projectService.updateProject(admin, "1", request));
+        assertThrows(RuntimeException.class, () -> projectService.updateProject(admin, "1", request));
     }
 
     @Test
@@ -171,17 +148,11 @@ public class TestProjectService {
         Project project = new Project();
         project.setStatus(ProjectStatus.UPCOMING);
 
-        when(projectRepository.getProjectById("1"))
-                .thenReturn(project);
+        when(projectRepository.getProjectById("1")).thenReturn(project);
 
-        when(projectRepository.updateProject(eq("1"), any(Project.class)))
-                .thenReturn(true);
+        when(projectRepository.updateProject(eq("1"), any(Project.class))).thenReturn(true);
 
-        boolean result = projectService.updateProjectStatus(
-                manager,
-                "1",
-                ProjectStatus.IN_PROGRESS
-        );
+        boolean result = projectService.updateProjectStatus(manager, "1", ProjectStatus.IN_PROGRESS);
 
         assertTrue(result);
         assertEquals(ProjectStatus.IN_PROGRESS, project.getStatus());
@@ -193,17 +164,11 @@ public class TestProjectService {
         Project project = new Project();
         project.setStatus(ProjectStatus.IN_PROGRESS);
 
-        when(projectRepository.getProjectById("1"))
-                .thenReturn(project);
+        when(projectRepository.getProjectById("1")).thenReturn(project);
 
-        when(projectRepository.updateProject(eq("1"), any(Project.class)))
-                .thenReturn(true);
+        when(projectRepository.updateProject(eq("1"), any(Project.class))).thenReturn(true);
 
-        projectService.updateProjectStatus(
-                manager,
-                "1",
-                ProjectStatus.COMPLETED
-        );
+        projectService.updateProjectStatus(manager, "1", ProjectStatus.COMPLETED);
 
         assertEquals(ProjectStatus.COMPLETED, project.getStatus());
         assertEquals(LocalDate.now(), project.getEndDate());
@@ -211,25 +176,16 @@ public class TestProjectService {
 
     @Test
     void updateProjectStatus_Unauthorized_ThrowsException() {
-        assertThrows(RuntimeException.class, () ->
-                projectService.updateProjectStatus(
-                        builder,
-                        "1",
-                        ProjectStatus.IN_PROGRESS
-                ));
+
+        assertThrows(RuntimeException.class, () -> projectService.updateProjectStatus(builder, "1", ProjectStatus.IN_PROGRESS));
     }
 
     @Test
     void updateProjectStatus_ProjectNotFound_ReturnsFalse() {
 
-        when(projectRepository.getProjectById("1"))
-                .thenReturn(null);
+        when(projectRepository.getProjectById("1")).thenReturn(null);
 
-        boolean result = projectService.updateProjectStatus(
-                manager,
-                "1",
-                ProjectStatus.IN_PROGRESS
-        );
+        boolean result = projectService.updateProjectStatus(manager, "1", ProjectStatus.IN_PROGRESS);
 
         assertFalse(result);
     }
@@ -237,8 +193,7 @@ public class TestProjectService {
     @Test
     void deleteProject_Admin_Success() {
 
-        when(projectRepository.deleteProject("1"))
-                .thenReturn(true);
+        when(projectRepository.deleteProject("1")).thenReturn(true);
 
         boolean result = projectService.deleteProject(admin, "1");
 
@@ -248,8 +203,7 @@ public class TestProjectService {
     @Test
     void deleteProject_Admin_ProjectNotFound_ReturnsFalse() {
 
-        when(projectRepository.deleteProject("1"))
-                .thenReturn(false);
+        when(projectRepository.deleteProject("1")).thenReturn(false);
 
         boolean result = projectService.deleteProject(admin, "1");
 
@@ -258,16 +212,16 @@ public class TestProjectService {
 
     @Test
     void deleteProject_Unauthorized_ThrowsException() {
-        assertThrows(RuntimeException.class, () ->
-                projectService.deleteProject(builder, "1"));
+
+        assertThrows(RuntimeException.class, () -> projectService.deleteProject(builder, "1"));
     }
 
     @Test
     void viewProject_ReturnsProject() {
 
         Project project = new Project();
-        when(projectRepository.getProjectById("1"))
-                .thenReturn(project);
+
+        when(projectRepository.getProjectById("1")).thenReturn(project);
 
         Project result = projectService.viewProject("1");
 
@@ -278,11 +232,10 @@ public class TestProjectService {
     void viewAllProjects_ReturnsMap() {
 
         Map<String, Project> map = new HashMap<>();
-        when(projectRepository.getAllProjects())
-                .thenReturn(map);
 
-        Map<String, Project> result =
-                projectService.viewAllProjects();
+        when(projectRepository.getAllProjects()).thenReturn(map);
+
+        Map<String, Project> result = projectService.viewAllProjects();
 
         assertEquals(map, result);
     }
