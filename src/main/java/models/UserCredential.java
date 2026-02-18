@@ -14,4 +14,7 @@ public class UserCredential {
 
     public String getPassword() { return password; }
     public User getUser() { return user; }
+    public void setUser(User user){
+        this.user = user;
+    }
 }

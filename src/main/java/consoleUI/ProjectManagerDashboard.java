@@ -6,6 +6,7 @@ import models.Project;
 import models.Task;
 import models.User;
 import models.enums.ProjectStatus;
+import models.enums.ProjectType;
 import models.enums.UserRole;
 import services.AssignmentService;
 import services.ProjectService;
@@ -191,6 +192,11 @@ public class ProjectManagerDashboard {
             System.out.println("End date must be after start date.");
         }
 
+        if (project.getStatus() == ProjectStatus.COMPLETED){
+            System.out.println("The project is marked completed, cannot create new tasks");
+            return;
+        }
+
         boolean created = taskService.createTask(
                 manager, name, description, start, end, project.getId()
         );
@@ -290,9 +296,13 @@ public class ProjectManagerDashboard {
 
         while (true) {
             try {
-                System.out.print("Status (UPCOMING/IN_PROGRESS/COMPLETED): ");
-                ProjectStatus status =
-                        ProjectStatus.valueOf(scanner.nextLine().toUpperCase());
+
+                ProjectStatus status = getProjectStatus();
+
+                if (status == ProjectStatus.COMPLETED || status == ProjectStatus.UPCOMING) {
+                    Map<String, Task> viewTasksByProject = taskService.viewTasksByProject(project.getId());
+                    viewTasksByProject.forEach((taskid, task) -> taskService.deleteTask(manager, taskid));
+                }
 
                 projectService.updateProjectStatus(manager, project.getId(), status);
                 System.out.println("Status updated.");
@@ -304,6 +314,26 @@ public class ProjectManagerDashboard {
         }
     }
 
+    private ProjectStatus getProjectStatus() {
+
+        while (true) {
+            System.out.println("""
+                Select Project Status:
+                1. UPCOMING
+                2. IN_PROGRESS
+                3. COMPLETED
+                """);
+
+            String input = scanner.nextLine().trim();
+
+            switch (input) {
+                case "1" -> { return ProjectStatus.UPCOMING; }
+                case "2" -> { return ProjectStatus.IN_PROGRESS; }
+                case "3" -> { return ProjectStatus.COMPLETED; }
+                default -> System.out.println("Invalid selection.");
+            }
+        }
+    }
     private LocalDate getValidDate(String message) {
         while (true) {
             try {

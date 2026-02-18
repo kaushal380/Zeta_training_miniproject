@@ -79,4 +79,8 @@ public class User {
                 "\nEmail: " + email +
                 "\nRole: " + role;
     }
+
+    public void setId(String number) {
+        this.id = number;
+    }
 }
