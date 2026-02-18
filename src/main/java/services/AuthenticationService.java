@@ -28,13 +28,7 @@ public class AuthenticationService {
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
-    public boolean register(String name,
-                            String phone,
-                            String email,
-                            String password,
-                            LocalDate dob,
-                            Address address,
-                            UserRole role) {
+    public boolean register(String name, String phone, String email, String password, LocalDate dob, Address address, UserRole role) {
 
         String userId = UUID.randomUUID().toString();
         User user = new User(userId, name, phone, email, dob, address, role);
