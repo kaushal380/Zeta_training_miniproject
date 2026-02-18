@@ -1,11 +1,49 @@
 {
+  "1ae03840-52e2-4e22-8eab-a1494e89b210" : {
+    "id" : "1ae03840-52e2-4e22-8eab-a1494e89b210",
+    "name" : "divyasree industrial",
+    "description" : "industrial construction in EC",
+    "startDate" : [ 2023, 12, 30 ],
+    "endDate" : [ 2029, 10, 21 ],
+    "status" : "UPCOMING",
+    "type" : "INDUSTRIAL",
+    "estimatedCost" : 1000021.0,
+    "location" : {
+      "city" : "Bengaluru",
+      "state" : "Karnataka",
+      "zipCode" : "345543",
+      "country" : "India"
+    },
+    "managerId" : null,
+    "builderIds" : [ ],
+    "clientIds" : [ ]
+  },
+  "368e0a6d-5575-4831-9a9f-ddcfe9652bc4" : {
+    "id" : "368e0a6d-5575-4831-9a9f-ddcfe9652bc4",
+    "name" : "Aparna Zennith",
+    "description" : "residential constructions near manikonda",
+    "startDate" : [ 2022, 3, 10 ],
+    "endDate" : [ 2027, 12, 31 ],
+    "status" : "IN_PROGRESS",
+    "type" : "RESIDENTIAL",
+    "estimatedCost" : 5000000.0,
+    "location" : {
+      "city" : "Hyderabad",
+      "state" : "Telangana",
+      "zipCode" : "123123",
+      "country" : "India"
+    },
+    "managerId" : "9e3415b7-7642-460e-bb2d-633a08a824f8",
+    "builderIds" : [ "9a0df790-75a5-49f1-91d7-ee613a8ca189" ],
+    "clientIds" : [ "9e3415b7-7642-460e-bb2d-633a08a824f9" ]
+  },
   "68b633d0-851c-4d22-896a-6106e1440b6f" : {
     "id" : "68b633d0-851c-4d22-896a-6106e1440b6f",
     "name" : "satva commercial",
     "description" : "new residential near tellapur",
     "startDate" : [ 2025, 5, 12 ],
-    "endDate" : [ 2030, 1, 20 ],
-    "status" : "UPCOMING",
+    "endDate" : [ 2026, 2, 18 ],
+    "status" : "COMPLETED",
     "type" : "COMMERCIAL",
     "estimatedCost" : 3003000.0,
     "location" : {
@@ -15,6 +53,7 @@
       "country" : "India"
     },
     "managerId" : "9e3415b7-7642-460e-bb2d-633a08a824f8",
-    "builderIds" : [ ]
+    "builderIds" : [ "9a0df790-75a5-49f1-91d7-ee613a8ca189" ],
+    "clientIds" : [ ]
   }
 }

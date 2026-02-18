@@ -6,6 +6,7 @@ import models.Project;
 import models.Task;
 import models.User;
 import models.enums.ProjectStatus;
+import models.enums.UserRole;
 import services.AssignmentService;
 import services.ProjectService;
 import services.TaskService;
@@ -35,7 +36,6 @@ public class ProjectManagerDashboard {
     }
 
     public void start(User manager) {
-
         while (true) {
 
             System.out.println("\n===== PROJECT MANAGER DASHBOARD =====");
@@ -51,19 +51,19 @@ public class ProjectManagerDashboard {
             System.out.println("10. Exit");
 
             System.out.print("Choose option: ");
-            String choice = scanner.nextLine();
+            String choice = scanner.nextLine().trim();
 
             try {
                 switch (choice) {
                     case "1" -> viewMyProjects(manager);
                     case "2" -> updateProject(manager);
                     case "3" -> updateProjectStatus(manager);
-                    case "4" -> assignBuilder(manager);
+                    case "4" -> assignBuilderToProject(manager);
                     case "5" -> createTask(manager);
                     case "6" -> updateTask(manager);
                     case "7" -> deleteTask(manager);
-                    case "8" -> assignTask(manager);
-                    case "9" -> viewTasks(manager);
+                    case "8" -> assignTaskToBuilder(manager);
+                    case "9" -> viewTasksByProject(manager);
                     case "10" -> { return; }
                     default -> System.out.println("Invalid choice.");
                 }
@@ -73,73 +73,114 @@ public class ProjectManagerDashboard {
         }
     }
 
-    private void viewMyProjects(User manager) {
-
-        List<Project> myProjects = getManagerProjects(manager);
-
-        if (myProjects.isEmpty()) {
-            System.out.println("No projects assigned.");
-            return;
-        }
-
-        for (int i = 0; i < myProjects.size(); i++) {
-            Project p = myProjects.get(i);
-            System.out.println((i + 1) + ". " + p.getName() + " | " + p.getStatus());
-        }
-    }
-
     private List<Project> getManagerProjects(User manager) {
-
-        Map<String, Project> projects = projectService.viewAllProjects();
-        List<Project> myProjects = new ArrayList<>();
-
-        for (Project p : projects.values()) {
+        List<Project> result = new ArrayList<>();
+        for (Project p : projectService.viewAllProjects().values()) {
             if (manager.getId().equals(p.getManagerId())) {
-                myProjects.add(p);
+                result.add(p);
             }
         }
-
-        return myProjects;
+        return result;
     }
 
-    private Project chooseProject(User manager) {
+    private Project selectProject(User manager) {
+        List<Project> projects = getManagerProjects(manager);
 
-        List<Project> myProjects = getManagerProjects(manager);
-
-        if (myProjects.isEmpty()) {
+        if (projects.isEmpty()) {
             System.out.println("No projects available.");
             return null;
         }
 
-        for (int i = 0; i < myProjects.size(); i++) {
-            System.out.println((i + 1) + ". " + myProjects.get(i).getName());
+        for (int i = 0; i < projects.size(); i++) {
+            System.out.println((i + 1) + ". "
+                    + projects.get(i).getName()
+                    + " | " + projects.get(i).getStatus());
         }
 
+        return projects.get(selectIndex(projects.size()));
+    }
+
+    private Task selectTask(User manager) {
+        List<Project> projects = getManagerProjects(manager);
+        Map<Integer, Task> taskMap = new HashMap<>();
+        int counter = 1;
+
+        for (Project p : projects) {
+            for (Task t : taskService.viewTasksByProject(p.getId()).values()) {
+                System.out.println(counter + ". "
+                        + t.getTaskName()
+                        + " | Project: " + p.getName()
+                        + " | Status: " + t.getStatus());
+                taskMap.put(counter, t);
+                counter++;
+            }
+        }
+
+        if (taskMap.isEmpty()) {
+            System.out.println("No tasks available.");
+            return null;
+        }
+
+        int selectedIndex = selectIndex(taskMap.size()) + 1;
+        return taskMap.get(selectedIndex);
+    }
+
+    private User selectBuilder() {
+        List<User> builders = userService.getUsersByRole(UserRole.BUILDER);
+
+        if (builders.isEmpty()) {
+            System.out.println("No builders available.");
+            return null;
+        }
+
+        for (int i = 0; i < builders.size(); i++) {
+            System.out.println((i + 1) + ". "
+                    + builders.get(i).getName()
+                    + " | ID: " + builders.get(i).getId());
+        }
+
+        return builders.get(selectIndex(builders.size()));
+    }
+
+    private int selectIndex(int size) {
         while (true) {
             System.out.print("Select number: ");
-            String input = scanner.nextLine();
+            String input = scanner.nextLine().trim();
 
             if (input.matches("\\d+")) {
                 int index = Integer.parseInt(input);
-                if (index >= 1 && index <= myProjects.size()) {
-                    return myProjects.get(index - 1);
+                if (index >= 1 && index <= size) {
+                    return index - 1;
                 }
             }
-
             System.out.println("Invalid selection.");
         }
     }
 
-    private void createTask(User manager) {
+    private void viewMyProjects(User manager) {
+        List<Project> projects = getManagerProjects(manager);
 
-        Project project = chooseProject(manager);
+        if (projects.isEmpty()) {
+            System.out.println("No projects assigned.");
+            return;
+        }
+
+        for (int i = 0; i < projects.size(); i++) {
+            System.out.println((i + 1) + ". "
+                    + projects.get(i).getName()
+                    + " | " + projects.get(i).getStatus());
+        }
+    }
+
+    private void createTask(User manager) {
+        Project project = selectProject(manager);
         if (project == null) return;
 
         System.out.print("Task Name: ");
-        String taskName = scanner.nextLine();
+        String name = scanner.nextLine().trim();
 
         System.out.print("Task Description: ");
-        String description = scanner.nextLine();
+        String description = scanner.nextLine().trim();
 
         LocalDate start = getValidDate("Start Date (yyyy-mm-dd): ");
 
@@ -151,127 +192,73 @@ public class ProjectManagerDashboard {
         }
 
         boolean created = taskService.createTask(
-                manager,
-                taskName,
-                description,
-                start,
-                end,
-                project.getId()
+                manager, name, description, start, end, project.getId()
         );
 
         System.out.println(created ? "Task created." : "Creation failed.");
     }
 
-    private List<Task> getAllManagerTasks(User manager) {
-
-        List<Project> projects = getManagerProjects(manager);
-        List<Task> allTasks = new ArrayList<>();
-
-        for (Project p : projects) {
-            Map<String, Task> tasks = taskService.viewTasksByProject(p.getId());
-            allTasks.addAll(tasks.values());
-        }
-
-        return allTasks;
-    }
-
-    private Task chooseTask(User manager) {
-
-        List<Project> projects = getManagerProjects(manager);
-        List<Task> tasks = new ArrayList<>();
-
-        for (Project p : projects) {
-            Map<String, Task> projectTasks =
-                    taskService.viewTasksByProject(p.getId());
-            tasks.addAll(projectTasks.values());
-        }
-
-        if (tasks.isEmpty()) {
-            System.out.println("No tasks available.");
-            return null;
-        }
-
-        int counter = 1;
-        Map<Integer, Task> indexMap = new HashMap<>();
-
-        for (Project p : projects) {
-            Map<String, Task> projectTasks =
-                    taskService.viewTasksByProject(p.getId());
-
-            for (Task t : projectTasks.values()) {
-                System.out.println(counter + ". "
-                        + t.getTaskName()
-                        + " | Project: " + p.getName()
-                        + " | Status: " + t.getStatus());
-                indexMap.put(counter, t);
-                counter++;
-            }
-        }
-
-        while (true) {
-            System.out.print("Select number: ");
-            String input = scanner.nextLine();
-
-            if (input.matches("\\d+")) {
-                int index = Integer.parseInt(input);
-                if (indexMap.containsKey(index)) {
-                    return indexMap.get(index);
-                }
-            }
-
-            System.out.println("Invalid selection.");
-        }
-    }
-
     private void updateTask(User manager) {
-
-        Task task = chooseTask(manager);
+        Task task = selectTask(manager);
         if (task == null) return;
 
         TaskUpdateRequest request = new TaskUpdateRequest();
 
         System.out.print("New Description (Enter to skip): ");
-        String desc = scanner.nextLine();
+        String desc = scanner.nextLine().trim();
         if (!desc.isBlank()) request.setDescription(desc);
 
-        boolean updated =
-                taskService.updateTask(manager, task.getId(), request);
-
+        boolean updated = taskService.updateTask(manager, task.getId(), request);
         System.out.println(updated ? "Task updated." : "Update failed.");
     }
 
     private void deleteTask(User manager) {
-
-        Task task = chooseTask(manager);
+        Task task = selectTask(manager);
         if (task == null) return;
 
-        boolean deleted =
-                taskService.deleteTask(manager, task.getId());
-
+        boolean deleted = taskService.deleteTask(manager, task.getId());
         System.out.println(deleted ? "Task deleted." : "Deletion failed.");
     }
 
-    private void assignTask(User manager) {
-
-        Task task = chooseTask(manager);
+    private void assignTaskToBuilder(User manager) {
+        Task task = selectTask(manager);
         if (task == null) return;
 
-        System.out.print("Enter Builder ID: ");
-        String builderId = scanner.nextLine();
+        User builder = selectBuilder();
+        if (builder == null) return;
 
-        boolean assigned =
-                taskService.assignTaskToBuilder(manager, task.getId(), builderId);
+        boolean assigned = taskService.assignTaskToBuilder(
+                manager, task.getId(), builder.getId()
+        );
 
-        System.out.println(assigned ? "Task assigned." : "Assignment failed.");
+        if (assigned){
+            assignmentService.assignProjectToBuilder(manager, task.getProjectId(), builder.getId());
+            System.out.println("Task Assigned");
+        }
+        else {
+            System.out.println("Assignment failed");
+        }
     }
 
-    private void viewTasks(User manager) {
-
-        Project project = chooseProject(manager);
+    private void assignBuilderToProject(User manager) {
+        Project project = selectProject(manager);
         if (project == null) return;
 
-        Map<String, Task> tasks =
-                taskService.viewTasksByProject(project.getId());
+        User builder = selectBuilder();
+        if (builder == null) return;
+
+        boolean assigned = assignmentService.assignProjectToBuilder(
+                manager, project.getId(), builder.getId()
+        );
+
+        System.out.println(assigned ? "Builder assigned." : "Assignment failed.");
+    }
+
+    private void viewTasksByProject(User manager) {
+        Project project = selectProject(manager);
+        if (project == null) return;
+
+        Map<String, Task> tasks = taskService.viewTasksByProject(project.getId());
 
         if (tasks.isEmpty()) {
             System.out.println("No tasks found.");
@@ -279,31 +266,26 @@ public class ProjectManagerDashboard {
         }
 
         for (Task t : tasks.values()) {
-            System.out.println(t.getTaskName()
-                    + " | " + t.getStatus());
+            System.out.println(t.getTaskName() + " | " + t.getStatus());
         }
     }
 
     private void updateProject(User manager) {
-
-        Project project = chooseProject(manager);
+        Project project = selectProject(manager);
         if (project == null) return;
 
         ProjectUpdateRequest request = new ProjectUpdateRequest();
 
         System.out.print("New Name (Enter to skip): ");
-        String name = scanner.nextLine();
+        String name = scanner.nextLine().trim();
         if (!name.isBlank()) request.setName(name);
 
-        boolean updated =
-                projectService.updateProject(manager, project.getId(), request);
-
+        boolean updated = projectService.updateProject(manager, project.getId(), request);
         System.out.println(updated ? "Project updated." : "Update failed.");
     }
 
     private void updateProjectStatus(User manager) {
-
-        Project project = chooseProject(manager);
+        Project project = selectProject(manager);
         if (project == null) return;
 
         while (true) {
@@ -322,26 +304,11 @@ public class ProjectManagerDashboard {
         }
     }
 
-    private void assignBuilder(User manager) {
-
-        Project project = chooseProject(manager);
-        if (project == null) return;
-
-        System.out.print("Enter Builder ID: ");
-        String builderId = scanner.nextLine();
-
-        boolean assigned =
-                assignmentService.assignProjectToBuilder(manager, project.getId(), builderId);
-
-        System.out.println(assigned ? "Builder assigned." : "Assignment failed.");
-    }
-
     private LocalDate getValidDate(String message) {
-
         while (true) {
             try {
                 System.out.print(message);
-                return LocalDate.parse(scanner.nextLine());
+                return LocalDate.parse(scanner.nextLine().trim());
             } catch (Exception e) {
                 System.out.println("Invalid date format. Use yyyy-mm-dd.");
             }

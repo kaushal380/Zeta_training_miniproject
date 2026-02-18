@@ -7,13 +7,14 @@ import models.enums.TaskStatus;
 import services.ProjectService;
 import services.TaskService;
 
-import java.util.Map;
-import java.util.Scanner;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class BuilderDashboard {
 
-    public static void start(User builder, TaskService taskService, ProjectService projectService, Scanner scanner) {
+    public static void start(User builder,
+                             TaskService taskService,
+                             ProjectService projectService,
+                             Scanner scanner) {
 
         while (true) {
 
@@ -24,76 +25,150 @@ public class BuilderDashboard {
             System.out.println("4. Exit");
 
             System.out.print("Choose option: ");
-            String choice = scanner.nextLine();
+            String choice = scanner.nextLine().trim();
 
             try {
                 switch (choice) {
-
                     case "1" -> viewMyProjects(builder, projectService);
-
                     case "2" -> viewMyTasks(builder, taskService);
-
                     case "3" -> updateTaskStatus(builder, taskService, scanner);
-
-                    case "4" -> {
-                        System.out.println("Exiting Builder Dashboard...");
-                        return;
-                    }
-
+                    case "4" -> { return; }
                     default -> System.out.println("Invalid option.");
                 }
-
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
             }
         }
     }
 
-    private static void viewMyProjects(User builder, ProjectService projectService) {
+    private static void viewMyProjects(User builder,
+                                       ProjectService projectService) {
 
-        Map<String, Project> projects = projectService.viewAllProjects();
+        List<Project> myProjects = new ArrayList<>();
 
-        var myProjects = projects.values()
-                .stream()
-                .filter(p -> p.getBuilderIds().contains(builder.getId()))
-                .collect(Collectors.toList());
+        for (Project p : projectService.viewAllProjects().values()) {
+            if (p.getBuilderIds().contains(builder.getId())) {
+                myProjects.add(p);
+            }
+        }
 
         if (myProjects.isEmpty()) {
             System.out.println("No projects assigned.");
             return;
         }
 
-        System.out.println("\nMy Projects:");
-        myProjects.forEach(project -> System.out.println("ID: " + project.getId() + " | Name: " + project.getName() + " | Status: " + project.getStatus()));
+        System.out.println("\n===== MY PROJECTS =====");
+
+        for (int i = 0; i < myProjects.size(); i++) {
+            Project p = myProjects.get(i);
+            System.out.println((i + 1) + ". "
+                    + p.getName()
+                    + " | Status: " + p.getStatus());
+        }
     }
 
-    private static void viewMyTasks(User builder, TaskService taskService) {
+    private static List<Task> getMyTasks(User builder,
+                                         TaskService taskService) {
 
-        Map<String, Task> tasks = taskService.viewTasksByBuilder(builder.getId());
+        return new ArrayList<>(
+                taskService.viewTasksByBuilder(builder.getId()).values()
+        );
+    }
+
+    private static void viewMyTasks(User builder,
+                                    TaskService taskService) {
+
+        List<Task> tasks = getMyTasks(builder, taskService);
 
         if (tasks.isEmpty()) {
             System.out.println("No tasks assigned.");
             return;
         }
 
-        System.out.println("\nMy Tasks:");
-        tasks.values().forEach(task -> System.out.println("Task ID: " + task.getId() + " | Description: " + task.getDescription() + " | Status: " + task.getStatus() + " | Project ID: " + task.getProjectId()));
+        System.out.println("\n===== MY TASKS =====");
+
+        for (int i = 0; i < tasks.size(); i++) {
+            Task t = tasks.get(i);
+            System.out.println((i + 1) + ". "
+                    + t.getDescription()
+                    + " | Status: " + t.getStatus());
+        }
     }
 
-    private static void updateTaskStatus(User builder, TaskService taskService, Scanner scanner) {
+    private static void updateTaskStatus(User builder,
+                                         TaskService taskService,
+                                         Scanner scanner) {
 
-        viewMyTasks(builder, taskService);
+        List<Task> tasks = getMyTasks(builder, taskService);
 
-        System.out.print("\nEnter Task ID to update: ");
-        String taskId = scanner.nextLine();
+        if (tasks.isEmpty()) {
+            System.out.println("No tasks available.");
+            return;
+        }
 
-        System.out.print("Enter new status (IN_PROGRESS / COMPLETED): ");
-        String statusInput = scanner.nextLine();
+        System.out.println("\n===== SELECT TASK =====");
 
-        TaskStatus status = TaskStatus.valueOf(statusInput.toUpperCase());
+        for (int i = 0; i < tasks.size(); i++) {
+            Task t = tasks.get(i);
+            System.out.println((i + 1) + ". "
+                    + t.getDescription()
+                    + " | Status: " + t.getStatus());
+        }
 
-        boolean updated = taskService.updateTaskStatus(builder, taskId, status);
+        int index = selectIndex(scanner, tasks.size());
 
-        System.out.println(updated ? "Task status updated successfully." : "Task not found.");
+        Task selectedTask = tasks.get(index);
+
+        TaskStatus status = selectStatus(scanner);
+
+        boolean updated = taskService.updateTaskStatus(
+                builder,
+                selectedTask.getId(),
+                status
+        );
+
+        if (updated) {
+            System.out.println("Task status updated successfully.");
+        } else {
+            System.out.println("Update failed.");
+        }
+    }
+
+    private static int selectIndex(Scanner scanner, int size) {
+
+        while (true) {
+            System.out.print("Select number: ");
+            String input = scanner.nextLine().trim();
+
+            if (input.matches("\\d+")) {
+                int index = Integer.parseInt(input);
+                if (index >= 1 && index <= size) {
+                    return index - 1;
+                }
+            }
+
+            System.out.println("Invalid selection.");
+        }
+    }
+
+    private static TaskStatus selectStatus(Scanner scanner) {
+
+        while (true) {
+
+            System.out.println("""
+                Select Status:
+                1. IN_PROGRESS
+                2. COMPLETED
+                """);
+
+            System.out.print("Choose option: ");
+            String input = scanner.nextLine().trim();
+
+            switch (input) {
+                case "1" -> { return TaskStatus.IN_PROGRESS; }
+                case "2" -> { return TaskStatus.COMPLETED; }
+                default -> System.out.println("Invalid choice.");
+            }
+        }
     }
 }

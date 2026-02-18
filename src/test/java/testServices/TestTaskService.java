@@ -47,7 +47,7 @@ public class TestTaskService {
 
         when(taskRepository.addTask(anyString(), any(Task.class))).thenReturn(true);
 
-        boolean result = taskService.createTask(manager, "Test Task", LocalDate.now(), LocalDate.now().plusDays(5), "project1");
+        boolean result = taskService.createTask(manager, "Test Task", "new test task",LocalDate.now(), LocalDate.now().plusDays(5), "project1");
 
         assertTrue(result);
     }
@@ -55,7 +55,7 @@ public class TestTaskService {
     @Test
     void createTaskUnauthorized() {
 
-        assertThrows(RuntimeException.class, () -> taskService.createTask(builder, "Task", LocalDate.now(), LocalDate.now(), "project1"));
+        assertThrows(RuntimeException.class, () -> taskService.createTask(builder, "Task", "test task",LocalDate.now(), LocalDate.now(), "project1"));
     }
 
     @Test

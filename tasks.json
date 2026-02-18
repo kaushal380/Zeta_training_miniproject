@@ -1,4 +1,15 @@
 {
+  "a1530a7f-3725-4f7b-ac24-6c627e03fd91" : {
+    "id" : "a1530a7f-3725-4f7b-ac24-6c627e03fd91",
+    "taskName" : "task_aparna_1",
+    "description" : "first task for layout",
+    "status" : "IN_PROGRESS",
+    "startDate" : [ 2026, 2, 19 ],
+    "endDate" : [ 2026, 12, 19 ],
+    "priority" : null,
+    "assignedBuilderId" : "9a0df790-75a5-49f1-91d7-ee613a8ca189",
+    "projectId" : "368e0a6d-5575-4831-9a9f-ddcfe9652bc4"
+  },
   "3c29432d-e5c6-4281-a53a-d5aa623333dc" : {
     "id" : "3c29432d-e5c6-4281-a53a-d5aa623333dc",
     "taskName" : "task1",
@@ -7,7 +18,18 @@
     "startDate" : [ 2025, 6, 1 ],
     "endDate" : [ 2030, 6, 1 ],
     "priority" : null,
-    "assignedBuilderId" : null,
+    "assignedBuilderId" : "9a0df790-75a5-49f1-91d7-ee613a8ca189",
+    "projectId" : "68b633d0-851c-4d22-896a-6106e1440b6f"
+  },
+  "53841313-a33f-4ba9-b097-8907885e488a" : {
+    "id" : "53841313-a33f-4ba9-b097-8907885e488a",
+    "taskName" : "task2",
+    "description" : "task2 needs focus",
+    "status" : "IN_PROGRESS",
+    "startDate" : [ 2020, 4, 1 ],
+    "endDate" : [ 2026, 2, 15 ],
+    "priority" : null,
+    "assignedBuilderId" : "9a0df790-75a5-49f1-91d7-ee613a8ca189",
     "projectId" : "68b633d0-851c-4d22-896a-6106e1440b6f"
   }
 }

@@ -1,67 +1,16 @@
 {
-  "srinath@gmail.com" : {
-    "password" : "srinath",
+  "test@gmail.com" : {
+    "password" : "password",
     "user" : {
-      "id" : "9a0df790-75a5-49f1-91d7-ee613a8ca189",
-      "name" : "srinath p",
-      "phoneNumber" : "6789067890",
-      "email" : "srinath@gmail.com",
-      "dateOfBirth" : [ 2004, 9, 28 ],
+      "id" : "27ecaac3-c735-48bf-83b2-71a439d63266",
+      "name" : "Kaushal",
+      "phoneNumber" : "9999999999",
+      "email" : "test@gmail.com",
+      "dateOfBirth" : [ 2000, 1, 1 ],
       "address" : {
-        "city" : "Hyderabad",
-        "state" : "Telangana",
-        "zipCode" : "500088",
-        "country" : "India"
-      },
-      "role" : "BUILDER"
-    }
-  },
-  "admin@gmail.com" : {
-    "password" : "admin",
-    "user" : {
-      "id" : "9e3415b7-7642-460e-bb2d-633a08a824f1",
-      "name" : "admin",
-      "phoneNumber" : "1234567890",
-      "email" : "admin@gmail.com",
-      "dateOfBirth" : [ 2005, 6, 7 ],
-      "address" : {
-        "city" : "Blr",
-        "state" : "KA",
-        "zipCode" : "10001",
-        "country" : "India"
-      },
-      "role" : "ADMIN"
-    }
-  },
-  "kaushal@gmail.com" : {
-    "password" : "kaushal",
-    "user" : {
-      "id" : "9e3415b7-7642-460e-bb2d-633a08a824f9",
-      "name" : "kaushal",
-      "phoneNumber" : "1234567890",
-      "email" : "kaushal@gmail.com",
-      "dateOfBirth" : [ 2005, 6, 7 ],
-      "address" : {
-        "city" : "Blr",
-        "state" : "KA",
-        "zipCode" : "10001",
-        "country" : "India"
-      },
-      "role" : "CLIENT"
-    }
-  },
-  "tejas@gmail.com" : {
-    "password" : "kaushal",
-    "user" : {
-      "id" : "9e3415b7-7642-460e-bb2d-633a08a824f8",
-      "name" : "kaushal",
-      "phoneNumber" : "1234567890",
-      "email" : "tejas@gmail.com",
-      "dateOfBirth" : [ 2005, 6, 7 ],
-      "address" : {
-        "city" : "Blr",
-        "state" : "KA",
-        "zipCode" : "10001",
+        "city" : "Bangalore",
+        "state" : "Karnataka",
+        "zipCode" : "560001",
         "country" : "India"
       },
       "role" : "PROJECT_MANAGER"
