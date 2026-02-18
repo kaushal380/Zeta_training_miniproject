@@ -21,11 +21,11 @@ public class AuthenticationDemo {
         Address address = new Address(
                 "Bangalore",
                 "Karnataka",
-                "560001",
+                560001,
                 "India"
         );
 
-        boolean isRegistered = authService.register(
+        User user = authService.register(
                 "tejas H S",
                 "1234567890",
                 "tejas@gmail.com",

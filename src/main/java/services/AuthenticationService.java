@@ -28,7 +28,7 @@ public class AuthenticationService {
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
-    public boolean register(String name,
+    public User register(String name,
                             String phone,
                             String email,
                             String password,
@@ -44,11 +44,11 @@ public class AuthenticationService {
 
         if (added) {
             logger.info("User registered successfully with email: " + email);
-            return true;
+            return user;
         }
 
         logger.warning("Registration failed for email: " + email);
-        return false;
+        return null;
     }
 
     public User login(String email, String password) {

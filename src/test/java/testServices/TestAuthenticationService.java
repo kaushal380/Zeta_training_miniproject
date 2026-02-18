@@ -27,7 +27,7 @@ public class TestAuthenticationService {
         address = new Address(
                 "Bangalore",
                 "Karnataka",
-                "560001",
+                560001,
                 "India"
         );
     }

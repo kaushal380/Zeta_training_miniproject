@@ -63,7 +63,7 @@ public class TestProjectService {
                 LocalDate.now(),
                 LocalDate.now().plusDays(10),
                 ProjectType.RESIDENTIAL,
-                new Address("City", "State", "123", "India"),
+                new Address("City", "State", 123, "India"),
                 1000
         );
 
@@ -81,7 +81,7 @@ public class TestProjectService {
                         LocalDate.now(),
                         LocalDate.now().plusDays(10),
                         ProjectType.RESIDENTIAL,
-                        new Address("City", "State", "123", "India"),
+                        new Address("City", "State", 234, "India"),
                         1000
                 ));
     }
