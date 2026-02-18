@@ -101,6 +101,35 @@ public class AssignmentService {
         return true;
     }
 
+
+    public boolean purchaseProject(User client, String projectId) {
+
+        if (client.getRole() != UserRole.CLIENT) {
+            throw new RuntimeException("Only clients can purchase projects");
+        }
+
+        Project project = projectRepository.getProjectById(projectId);
+
+        if (project == null) {
+            logger.warning("Project not found: " + projectId);
+            return false;
+        }
+
+        if (project.getClientIds().contains(client.getId())) {
+            logger.info("Client already purchased this project.");
+            return true;
+        }
+
+        project.addClientID(client.getId());
+        projectRepository.updateProject(projectId, project);
+
+        logger.info("Client " + client.getName() +
+                " purchased project " + project.getName());
+
+        return true;
+    }
+
+
     private User getUserById(String userId) {
 
         for (UserCredential credential : userRepository.getAllUsers().values()) {
@@ -113,4 +142,6 @@ public class AssignmentService {
         }
         return null;
     }
+
+
 }

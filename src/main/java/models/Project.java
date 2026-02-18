@@ -21,6 +21,8 @@ public class Project {
     private String managerId;
 
     private List<String> builderIds = new ArrayList<>();
+    private List<String> clientIds = new ArrayList<>();
+
 
     public Project() {
     }
@@ -147,4 +149,11 @@ public class Project {
                 '}';
     }
 
+    public List<String> getClientIds() {
+        return clientIds;
+    }
+
+    public void addClientID(String clientId) {
+        this.clientIds.add(clientId);
+    }
 }

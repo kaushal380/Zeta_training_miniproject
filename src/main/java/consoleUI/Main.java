@@ -79,6 +79,8 @@ public class Main {
                             scanner
                     );
 
+            case CLIENT -> new ClientDashboard(projectService, assignmentService, scanner).start(user);
+
             default ->
                     System.out.println("Role not supported.");
         }

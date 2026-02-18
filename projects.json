@@ -15,6 +15,26 @@
       "country" : "India"
     },
     "managerId" : "9e3415b7-7642-460e-bb2d-633a08a824f8",
-    "builderIds" : [ ]
+    "builderIds" : [ "9a0df790-75a5-49f1-91d7-ee613a8ca189" ],
+    "clientIds" : [ "9e3415b7-7642-460e-bb2d-633a08a824f9" ]
+  },
+  "7f22dfae-7c68-408b-add3-71d340390958" : {
+    "id" : "7f22dfae-7c68-408b-add3-71d340390958",
+    "name" : "my home",
+    "description" : "residential project in EC",
+    "startDate" : [ 2023, 5, 10 ],
+    "endDate" : [ 2030, 12, 12 ],
+    "status" : "UPCOMING",
+    "type" : "RESIDENTIAL",
+    "estimatedCost" : 1.0E9,
+    "location" : {
+      "city" : "Bengaloru",
+      "state" : "Ka",
+      "zipCode" : "123123",
+      "country" : "India"
+    },
+    "managerId" : "9e3415b7-7642-460e-bb2d-633a08a824f8",
+    "builderIds" : [ ],
+    "clientIds" : [ "9e3415b7-7642-460e-bb2d-633a08a824f9" ]
   }
 }
