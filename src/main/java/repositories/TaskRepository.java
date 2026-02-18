@@ -19,8 +19,12 @@ public class TaskRepository {
     private static final Logger logger = Logger.getLogger(TaskRepository.class.getName());
 
     private final String filePath;
+
     private final Map<String, Task> tasks = new ConcurrentHashMap<>();
+
     private final ObjectMapper objectMapper;
+
+    private final Object lock = new Object();
 
     public TaskRepository(String filePath) {
 
@@ -39,36 +43,45 @@ public class TaskRepository {
 
     public boolean addTask(String id, Task task) {
 
-        if (tasks.containsKey(id)) {
-            logger.warning("Duplicate task id: " + id);
-            return false;
-        }
+        synchronized (lock) {
 
-        tasks.put(id, task);
-        saveToFile();
-        return true;
+            if (tasks.containsKey(id)) {
+                logger.warning("Duplicate task id: " + id);
+                return false;
+            }
+
+            tasks.put(id, task);
+            saveToFile();
+            return true;
+        }
     }
 
     public boolean updateTask(String id, Task task) {
 
-        if (!tasks.containsKey(id)) {
-            return false;
-        }
+        synchronized (lock) {
 
-        tasks.put(id, task);
-        saveToFile();
-        return true;
+            if (!tasks.containsKey(id)) {
+                return false;
+            }
+
+            tasks.put(id, task);
+            saveToFile();
+            return true;
+        }
     }
 
     public boolean deleteTask(String id) {
 
-        if (!tasks.containsKey(id)) {
-            return false;
-        }
+        synchronized (lock) {
 
-        tasks.remove(id);
-        saveToFile();
-        return true;
+            if (!tasks.containsKey(id)) {
+                return false;
+            }
+
+            tasks.remove(id);
+            saveToFile();
+            return true;
+        }
     }
 
     public Task getTaskById(String id) {
@@ -76,17 +89,29 @@ public class TaskRepository {
     }
 
     public Map<String, Task> getTasksByProjectId(String projectId) {
-        return tasks.values()
-                .stream()
-                .filter(t -> t.getProjectId().equals(projectId))
-                .collect(Collectors.toMap(Task::getId, t -> t));
+
+        Map<String, Task> result = new ConcurrentHashMap<>();
+
+        for (Task task : tasks.values()) {
+
+            if (projectId.equals(task.getProjectId())) {
+                result.put(task.getId(), task);
+            }
+        }
+        return result;
     }
 
     public Map<String, Task> getTasksByBuilderId(String builderId) {
-        return tasks.values()
-                .stream()
-                .filter(t -> builderId.equals(t.getAssignedBuilderId()))
-                .collect(Collectors.toMap(Task::getId, t -> t));
+
+        Map<String, Task> result = new ConcurrentHashMap<>();
+
+        for (Task task : tasks.values()) {
+
+            if (builderId.equals(task.getAssignedBuilderId())) {
+                result.put(task.getId(), task);
+            }
+        }
+        return result;
     }
 
     private void loadFromFile() {
@@ -97,25 +122,24 @@ public class TaskRepository {
             return;
         }
 
-        try {
-            Map<String, Task> fileTasks = objectMapper.readValue(file, new TypeReference<Map<String, Task>>() {});
+        synchronized (lock) {
+            try {
+                Map<String, Task> fileTasks = objectMapper.readValue(file, new TypeReference<Map<String, Task>>() {});
+                tasks.putAll(fileTasks);
 
-            tasks.putAll(fileTasks);
-
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Failed to load tasks", e);
-
-            throw new RuntimeException("TaskRepository initialization failed", e);
+            } catch (IOException e) {
+                logger.log(Level.SEVERE, "Failed to load tasks", e);
+                throw new RuntimeException("TaskRepository initialization failed", e);
+            }
         }
     }
 
     private void saveToFile() {
+
         try {
             objectMapper.writeValue(new File(filePath), tasks);
-
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Failed to save tasks", e);
-
             throw new RuntimeException("Failed to persist tasks", e);
         }
     }
