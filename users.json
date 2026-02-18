@@ -2,10 +2,61 @@
   "login@gmail.com" : {
     "password" : "password",
     "user" : {
-      "id" : "f28d2c29-8fbc-426b-99b4-e962692b9d1e",
+      "id" : "e0f4d992-0234-4974-a40b-1303e647f60a",
       "name" : "Kaushal",
       "phoneNumber" : "9999999999",
       "email" : "login@gmail.com",
+      "dateOfBirth" : [ 2000, 1, 1 ],
+      "address" : {
+        "city" : "Bangalore",
+        "state" : "Karnataka",
+        "zipCode" : "560001",
+        "country" : "India"
+      },
+      "role" : "ADMIN"
+    }
+  },
+  "dup@gmail.com" : {
+    "password" : "password",
+    "user" : {
+      "id" : "891a9c59-b83a-4068-8bbd-981540db5048",
+      "name" : "Kaushal",
+      "phoneNumber" : "9999999999",
+      "email" : "dup@gmail.com",
+      "dateOfBirth" : [ 2000, 1, 1 ],
+      "address" : {
+        "city" : "Bangalore",
+        "state" : "Karnataka",
+        "zipCode" : "560001",
+        "country" : "India"
+      },
+      "role" : "PROJECT_MANAGER"
+    }
+  },
+  "test@gmail.com" : {
+    "password" : "password",
+    "user" : {
+      "id" : "d20472cd-cc3e-42b7-a0b9-15838ba733b4",
+      "name" : "Kaushal",
+      "phoneNumber" : "9999999999",
+      "email" : "test@gmail.com",
+      "dateOfBirth" : [ 2000, 1, 1 ],
+      "address" : {
+        "city" : "Bangalore",
+        "state" : "Karnataka",
+        "zipCode" : "560001",
+        "country" : "India"
+      },
+      "role" : "PROJECT_MANAGER"
+    }
+  },
+  "wrongpass@gmail.com" : {
+    "password" : "password",
+    "user" : {
+      "id" : "a0842e23-6ccd-4dce-a051-3d75d401abd9",
+      "name" : "Kaushal",
+      "phoneNumber" : "9999999999",
+      "email" : "wrongpass@gmail.com",
       "dateOfBirth" : [ 2000, 1, 1 ],
       "address" : {
         "city" : "Bangalore",
