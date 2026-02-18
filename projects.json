@@ -4,8 +4,8 @@
     "name" : "satva commercial",
     "description" : "new residential near tellapur",
     "startDate" : [ 2025, 5, 12 ],
-    "endDate" : [ 2030, 1, 20 ],
-    "status" : "UPCOMING",
+    "endDate" : [ 2026, 2, 18 ],
+    "status" : "COMPLETED",
     "type" : "COMMERCIAL",
     "estimatedCost" : 3003000.0,
     "location" : {
@@ -15,6 +15,6 @@
       "country" : "India"
     },
     "managerId" : "9e3415b7-7642-460e-bb2d-633a08a824f8",
-    "builderIds" : [ ]
+    "builderIds" : [ "9a0df790-75a5-49f1-91d7-ee613a8ca189" ]
   }
 }

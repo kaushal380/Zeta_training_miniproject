@@ -1,0 +1,13 @@
+{
+  "3c29432d-e5c6-4281-a53a-d5aa623333dc" : {
+    "id" : "3c29432d-e5c6-4281-a53a-d5aa623333dc",
+    "taskName" : "task1",
+    "description" : "abc",
+    "status" : "PENDING",
+    "startDate" : [ 2025, 6, 1 ],
+    "endDate" : [ 2030, 6, 1 ],
+    "priority" : null,
+    "assignedBuilderId" : null,
+    "projectId" : "68b633d0-851c-4d22-896a-6106e1440b6f"
+  }
+}

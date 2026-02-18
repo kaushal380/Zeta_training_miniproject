@@ -6,25 +6,41 @@ import models.Project;
 import models.Task;
 import models.User;
 import models.enums.ProjectStatus;
-import models.enums.Priority;
-import models.enums.TaskStatus;
 import services.AssignmentService;
 import services.ProjectService;
 import services.TaskService;
+import services.UserService;
 
 import java.time.LocalDate;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class ProjectManagerDashboard {
 
-    public static void start(User manager, ProjectService projectService, TaskService taskService, AssignmentService assignmentService, Scanner scanner) {
+    private final ProjectService projectService;
+    private final TaskService taskService;
+    private final AssignmentService assignmentService;
+    private final UserService userService;
+    private final Scanner scanner;
+
+    public ProjectManagerDashboard(ProjectService projectService,
+                                   TaskService taskService,
+                                   AssignmentService assignmentService,
+                                   UserService userService,
+                                   Scanner scanner) {
+        this.projectService = projectService;
+        this.taskService = taskService;
+        this.assignmentService = assignmentService;
+        this.userService = userService;
+        this.scanner = scanner;
+    }
+
+    public void start(User manager) {
 
         while (true) {
 
             System.out.println("\n===== PROJECT MANAGER DASHBOARD =====");
             System.out.println("1. View My Projects");
-            System.out.println("2. Update Project Details");
+            System.out.println("2. Update Project");
             System.out.println("3. Update Project Status");
             System.out.println("4. Assign Builder to Project");
             System.out.println("5. Create Task");
@@ -39,198 +55,296 @@ public class ProjectManagerDashboard {
 
             try {
                 switch (choice) {
-
-                    case "1" -> viewMyProjects(manager, projectService);
-
-                    case "2" -> updateProject(manager, projectService, scanner);
-
-                    case "3" -> updateProjectStatus(manager, projectService, scanner);
-
-                    case "4" -> assignBuilder(manager, projectService, assignmentService, scanner);
-
-                    case "5" -> createTask(manager, taskService, scanner);
-
-                    case "6" -> updateTask(manager, taskService, scanner);
-
-                    case "7" -> deleteTask(manager, taskService, scanner);
-
-                    case "8" -> assignTask(manager, taskService, scanner);
-
-                    case "9" -> viewTasks(manager, taskService, projectService, scanner);
-
-                    case "10" -> {
-                        System.out.println("Exiting Manager Dashboard...");
-                        return;
-                    }
-
+                    case "1" -> viewMyProjects(manager);
+                    case "2" -> updateProject(manager);
+                    case "3" -> updateProjectStatus(manager);
+                    case "4" -> assignBuilder(manager);
+                    case "5" -> createTask(manager);
+                    case "6" -> updateTask(manager);
+                    case "7" -> deleteTask(manager);
+                    case "8" -> assignTask(manager);
+                    case "9" -> viewTasks(manager);
+                    case "10" -> { return; }
                     default -> System.out.println("Invalid choice.");
                 }
-
             } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
+                System.out.println("Operation failed: " + e.getMessage());
             }
         }
     }
 
-    // ========================= PROJECT METHODS ==============================
+    private void viewMyProjects(User manager) {
 
-    private static void viewMyProjects(User manager, ProjectService service) {
+        List<Project> myProjects = getManagerProjects(manager);
 
-        Map<String, Project> projects = service.viewAllProjects();
+        if (myProjects.isEmpty()) {
+            System.out.println("No projects assigned.");
+            return;
+        }
 
-        System.out.println("\nYour Projects:");
-        projects.values().stream().filter(p -> manager.getId().equals(p.getManagerId())).forEach(p -> System.out.println("ID: " + p.getId() +" | Name: " + p.getName() + " | Status: " + p.getStatus()));
+        for (int i = 0; i < myProjects.size(); i++) {
+            Project p = myProjects.get(i);
+            System.out.println((i + 1) + ". " + p.getName() + " | " + p.getStatus());
+        }
     }
 
-    private static String chooseProject(User manager, ProjectService service, Scanner scanner) {
+    private List<Project> getManagerProjects(User manager) {
 
-        viewMyProjects(manager, service);
+        Map<String, Project> projects = projectService.viewAllProjects();
+        List<Project> myProjects = new ArrayList<>();
 
-        System.out.print("Enter Project ID: ");
-        return scanner.nextLine();
+        for (Project p : projects.values()) {
+            if (manager.getId().equals(p.getManagerId())) {
+                myProjects.add(p);
+            }
+        }
+
+        return myProjects;
     }
 
-    private static void updateProject(User manager, ProjectService service, Scanner scanner) {
+    private Project chooseProject(User manager) {
 
-        String id = chooseProject(manager, service, scanner);
+        List<Project> myProjects = getManagerProjects(manager);
 
-        ProjectUpdateRequest request = new ProjectUpdateRequest();
+        if (myProjects.isEmpty()) {
+            System.out.println("No projects available.");
+            return null;
+        }
 
-        System.out.print("New Name (Press Enter to skip): ");
-        String name = scanner.nextLine();
-        if (!name.isBlank())
-            request.setName(name);
+        for (int i = 0; i < myProjects.size(); i++) {
+            System.out.println((i + 1) + ". " + myProjects.get(i).getName());
+        }
 
-        System.out.print("New Description (Press Enter to skip): ");
-        String desc = scanner.nextLine();
-        if (!desc.isBlank())
-            request.setDescription(desc);
+        while (true) {
+            System.out.print("Select number: ");
+            String input = scanner.nextLine();
 
-        System.out.print("New Start Date (yyyy-mm-dd) or Enter to skip: ");
-        String startInput = scanner.nextLine();
-        if (!startInput.isBlank())
-            request.setStartDate(LocalDate.parse(startInput));
+            if (input.matches("\\d+")) {
+                int index = Integer.parseInt(input);
+                if (index >= 1 && index <= myProjects.size()) {
+                    return myProjects.get(index - 1);
+                }
+            }
 
-        System.out.print("New End Date (yyyy-mm-dd) or Enter to skip: ");
-        String endInput = scanner.nextLine();
-        if (!endInput.isBlank())
-            request.setEndDate(LocalDate.parse(endInput));
-
-        System.out.print("New Estimated Cost (Enter to skip): ");
-        String cost = scanner.nextLine();
-        if (!cost.isBlank())
-            request.setEstimatedCost(Double.parseDouble(cost));
-
-        boolean updated = service.updateProject(manager, id, request);
-
-        System.out.println(updated ? "Project updated successfully." : "Project not found.");
+            System.out.println("Invalid selection.");
+        }
     }
 
-    private static void updateProjectStatus(User manager, ProjectService service, Scanner scanner) {
+    private void createTask(User manager) {
 
-        String id = chooseProject(manager, service, scanner);
+        Project project = chooseProject(manager);
+        if (project == null) return;
 
-        System.out.print("Status (UPCOMING / IN_PROGRESS / COMPLETED): ");
-        ProjectStatus status = ProjectStatus.valueOf(scanner.nextLine().toUpperCase());
-
-        boolean updated = service.updateProjectStatus(manager, id, status);
-
-        System.out.println(updated ? "Status updated." : "Project not found.");
-    }
-
-    private static void assignBuilder(User manager, ProjectService projectService, AssignmentService assignmentService, Scanner scanner) {
-
-        String projectId = chooseProject(manager, projectService, scanner);
-
-        System.out.print("Enter Builder ID: ");
-        String builderId = scanner.nextLine();
-
-        boolean assigned = assignmentService.assignProjectToBuilder(manager, projectId, builderId);
-
-        System.out.println(assigned ? "Builder assigned." : "Failed.");
-    }
-
-    private static void createTask(User manager, TaskService service, Scanner scanner) {
-
-        System.out.print("Project ID: ");
-        String projectId = scanner.nextLine();
+        System.out.print("Task Name: ");
+        String taskName = scanner.nextLine();
 
         System.out.print("Task Description: ");
         String description = scanner.nextLine();
 
-        System.out.print("Start Date (yyyy-mm-dd): ");
-        LocalDate start = LocalDate.parse(scanner.nextLine());
+        LocalDate start = getValidDate("Start Date (yyyy-mm-dd): ");
 
-        System.out.print("End Date (yyyy-mm-dd): ");
-        LocalDate end = LocalDate.parse(scanner.nextLine());
+        LocalDate end;
+        while (true) {
+            end = getValidDate("End Date (yyyy-mm-dd): ");
+            if (end.isAfter(start)) break;
+            System.out.println("End date must be after start date.");
+        }
 
-        boolean created = service.createTask(manager, description, start, end, projectId);
+        boolean created = taskService.createTask(
+                manager,
+                taskName,
+                description,
+                start,
+                end,
+                project.getId()
+        );
 
-        System.out.println(created ? "Task created." : "Failed.");
+        System.out.println(created ? "Task created." : "Creation failed.");
     }
 
-    private static void updateTask(User manager, TaskService service, Scanner scanner) {
+    private List<Task> getAllManagerTasks(User manager) {
 
-        System.out.print("Task ID: ");
-        String taskId = scanner.nextLine();
+        List<Project> projects = getManagerProjects(manager);
+        List<Task> allTasks = new ArrayList<>();
+
+        for (Project p : projects) {
+            Map<String, Task> tasks = taskService.viewTasksByProject(p.getId());
+            allTasks.addAll(tasks.values());
+        }
+
+        return allTasks;
+    }
+
+    private Task chooseTask(User manager) {
+
+        List<Project> projects = getManagerProjects(manager);
+        List<Task> tasks = new ArrayList<>();
+
+        for (Project p : projects) {
+            Map<String, Task> projectTasks =
+                    taskService.viewTasksByProject(p.getId());
+            tasks.addAll(projectTasks.values());
+        }
+
+        if (tasks.isEmpty()) {
+            System.out.println("No tasks available.");
+            return null;
+        }
+
+        int counter = 1;
+        Map<Integer, Task> indexMap = new HashMap<>();
+
+        for (Project p : projects) {
+            Map<String, Task> projectTasks =
+                    taskService.viewTasksByProject(p.getId());
+
+            for (Task t : projectTasks.values()) {
+                System.out.println(counter + ". "
+                        + t.getTaskName()
+                        + " | Project: " + p.getName()
+                        + " | Status: " + t.getStatus());
+                indexMap.put(counter, t);
+                counter++;
+            }
+        }
+
+        while (true) {
+            System.out.print("Select number: ");
+            String input = scanner.nextLine();
+
+            if (input.matches("\\d+")) {
+                int index = Integer.parseInt(input);
+                if (indexMap.containsKey(index)) {
+                    return indexMap.get(index);
+                }
+            }
+
+            System.out.println("Invalid selection.");
+        }
+    }
+
+    private void updateTask(User manager) {
+
+        Task task = chooseTask(manager);
+        if (task == null) return;
 
         TaskUpdateRequest request = new TaskUpdateRequest();
 
-        System.out.print("New Description (Press Enter to skip): ");
+        System.out.print("New Description (Enter to skip): ");
         String desc = scanner.nextLine();
-        if (!desc.isBlank())
-            request.setDescription(desc);
+        if (!desc.isBlank()) request.setDescription(desc);
 
-        System.out.print("New Priority (LOW/MEDIUM/HIGH) or Enter to skip: ");
-        String priority = scanner.nextLine();
-        if (!priority.isBlank())
-            request.setPriority(Priority.valueOf(priority.toUpperCase()));
+        boolean updated =
+                taskService.updateTask(manager, task.getId(), request);
 
-        System.out.print("New Status (PENDING/IN_PROGRESS/COMPLETED) or Enter to skip: ");
-        String status = scanner.nextLine();
-        if (!status.isBlank())
-            request.setStatus(TaskStatus.valueOf(status.toUpperCase()));
-
-        boolean updated = service.updateTask(manager, taskId, request);
-
-        System.out.println(updated ? "Task updated." : "Task not found.");
+        System.out.println(updated ? "Task updated." : "Update failed.");
     }
 
-    private static void deleteTask(User manager, TaskService service, Scanner scanner) {
+    private void deleteTask(User manager) {
 
-        System.out.print("Task ID: ");
-        String id = scanner.nextLine();
+        Task task = chooseTask(manager);
+        if (task == null) return;
 
-        boolean deleted = service.deleteTask(manager, id);
+        boolean deleted =
+                taskService.deleteTask(manager, task.getId());
 
-        System.out.println(deleted ? "Task deleted." : "Task not found.");
+        System.out.println(deleted ? "Task deleted." : "Deletion failed.");
     }
 
-    private static void assignTask(User manager, TaskService service, Scanner scanner) {
+    private void assignTask(User manager) {
 
-        System.out.print("Task ID: ");
-        String taskId = scanner.nextLine();
+        Task task = chooseTask(manager);
+        if (task == null) return;
 
-        System.out.print("Builder ID: ");
+        System.out.print("Enter Builder ID: ");
         String builderId = scanner.nextLine();
 
-        boolean assigned = service.assignTaskToBuilder(manager, taskId, builderId);
+        boolean assigned =
+                taskService.assignTaskToBuilder(manager, task.getId(), builderId);
 
-        System.out.println(assigned ? "Task assigned." : "Task not found.");
+        System.out.println(assigned ? "Task assigned." : "Assignment failed.");
     }
 
-    private static void viewTasks(User manager, TaskService taskService, ProjectService projectService, Scanner scanner) {
+    private void viewTasks(User manager) {
 
-        String projectId = chooseProject(manager, projectService, scanner);
+        Project project = chooseProject(manager);
+        if (project == null) return;
 
-        Map<String, Task> tasks = taskService.viewTasksByProject(projectId);
+        Map<String, Task> tasks =
+                taskService.viewTasksByProject(project.getId());
 
         if (tasks.isEmpty()) {
             System.out.println("No tasks found.");
             return;
         }
 
-        tasks.values().forEach(task ->
-                System.out.println("Task ID: " + task.getId() + " | Description: " + task.getDescription() + " | Status: " + task.getStatus()));
+        for (Task t : tasks.values()) {
+            System.out.println(t.getTaskName()
+                    + " | " + t.getStatus());
+        }
+    }
+
+    private void updateProject(User manager) {
+
+        Project project = chooseProject(manager);
+        if (project == null) return;
+
+        ProjectUpdateRequest request = new ProjectUpdateRequest();
+
+        System.out.print("New Name (Enter to skip): ");
+        String name = scanner.nextLine();
+        if (!name.isBlank()) request.setName(name);
+
+        boolean updated =
+                projectService.updateProject(manager, project.getId(), request);
+
+        System.out.println(updated ? "Project updated." : "Update failed.");
+    }
+
+    private void updateProjectStatus(User manager) {
+
+        Project project = chooseProject(manager);
+        if (project == null) return;
+
+        while (true) {
+            try {
+                System.out.print("Status (UPCOMING/IN_PROGRESS/COMPLETED): ");
+                ProjectStatus status =
+                        ProjectStatus.valueOf(scanner.nextLine().toUpperCase());
+
+                projectService.updateProjectStatus(manager, project.getId(), status);
+                System.out.println("Status updated.");
+                return;
+
+            } catch (Exception e) {
+                System.out.println("Invalid status.");
+            }
+        }
+    }
+
+    private void assignBuilder(User manager) {
+
+        Project project = chooseProject(manager);
+        if (project == null) return;
+
+        System.out.print("Enter Builder ID: ");
+        String builderId = scanner.nextLine();
+
+        boolean assigned =
+                assignmentService.assignProjectToBuilder(manager, project.getId(), builderId);
+
+        System.out.println(assigned ? "Builder assigned." : "Assignment failed.");
+    }
+
+    private LocalDate getValidDate(String message) {
+
+        while (true) {
+            try {
+                System.out.print(message);
+                return LocalDate.parse(scanner.nextLine());
+            } catch (Exception e) {
+                System.out.println("Invalid date format. Use yyyy-mm-dd.");
+            }
+        }
     }
 }

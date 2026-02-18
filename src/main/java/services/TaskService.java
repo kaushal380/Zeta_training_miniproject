@@ -23,6 +23,7 @@ public class TaskService {
     }
 
     public boolean createTask(User user,
+                              String taskName,
                               String description,
                               LocalDate startDate,
                               LocalDate endDate,
@@ -36,6 +37,7 @@ public class TaskService {
 
         Task task = new Task();
         task.setId(id);
+        task.setTaskName(taskName);
         task.setDescription(description);
         task.setStartDate(startDate);
         task.setEndDate(endDate);
@@ -44,6 +46,7 @@ public class TaskService {
 
         return taskRepository.addTask(id, task);
     }
+
 
     public boolean updateTask(User user, String taskId, TaskUpdateRequest request) {
 
