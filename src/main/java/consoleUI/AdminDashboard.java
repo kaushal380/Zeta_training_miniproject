@@ -6,9 +6,11 @@ import models.Address;
 import models.Project;
 import models.User;
 import models.enums.ProjectType;
+import models.enums.UserRole;
 import services.AssignmentService;
 import services.ProjectService;
 import services.AuthenticationService;
+import services.UserService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,14 +24,17 @@ public class AdminDashboard {
     private final AuthenticationService authService;
     private final Scanner scanner;
     private final AssignmentService assignmentService;
+    private final UserService userService;
 
     public AdminDashboard(ProjectService projectService,
                           AuthenticationService authService,
                           AssignmentService assignmentService,
+                          UserService userService,
                           Scanner scanner) {
         this.projectService = projectService;
         this.authService = authService;
         this.assignmentService = assignmentService;
+        this.userService = userService;
         this.scanner = scanner;
     }
 
@@ -68,10 +73,9 @@ public class AdminDashboard {
                 case 3 -> updateProject(admin);
                 case 4 -> deleteProject(admin);
                 case 5 -> addUser();
-                case 6 -> assignProjectToManager();
-                case 7 -> viewAllManagers();
-                case 8 -> viewAllBuilders();
-                case 9 -> viewAllClients();
+                case 6 -> assignProjectToManager(admin);
+                case 7 -> viewAllUsers(admin);
+                case 8 -> deleteUser(admin);
                 case 0 -> {
                     System.out.println("Logging out...");
                     return;
@@ -431,10 +435,121 @@ public class AdminDashboard {
         System.out.println(newUser);
     }
 
-    private void assignProjectToManager() {
+    private void assignProjectToManager(User admin) {
+
         System.out.println("Assigning project to manager...");
-        // call assignment service
+
+
+        Map<String, Project> projects = projectService.viewAllProjects();
+
+        if (projects.isEmpty()) {
+            System.out.println("No projects available to update.");
+            return;
+        }
+
+        List<Project> projectList = new ArrayList<>(projects.values());
+
+        Project selectedProject = getProject(projectList, "ASSIGNMENT");
+
+
+
+        List<User> managers = userService.getUsersByRole(UserRole.PROJECT_MANAGER);
+
+        if (managers.isEmpty()) {
+            System.out.println("No project managers available.");
+            return;
+        }
+
+        System.out.println("\n=========== SELECT MANAGER ===========");
+
+        for (int i = 0; i < managers.size(); i++) {
+            User m = managers.get(i);
+            System.out.println((i + 1) + ". "
+                    + m.getName()
+                    + " | Email: " + m.getEmail());
+        }
+
+        int managerChoice;
+
+        while (true) {
+            System.out.print("Select manager number: ");
+            String input = scanner.nextLine();
+
+            if (input.matches("\\d+")) {
+                managerChoice = Integer.parseInt(input);
+                if (managerChoice >= 1 && managerChoice <= managers.size()) {
+                    break;
+                }
+            }
+            System.out.println("Invalid selection. Try again.");
+        }
+
+        User selectedManager = managers.get(managerChoice - 1);
+
+        try {
+            assignmentService.assignProjectToManager(admin, selectedProject.getId(), selectedManager.getId());
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+            System.out.println("Assignment failed");
+        }
+
+    private void viewAllUsers(User admin) {
+
+        List<User> users = userService.getAllUsers(admin);
+
+        if (users.isEmpty()) {
+            System.out.println("No users found.");
+            return;
+        }
+
+        System.out.println("\n=========== ALL USERS ===========");
+
+        System.out.printf("%-36s | %-20s | %-15s%n",
+                "ID", "Name", "Role");
+
+        System.out.println("--------------------------------------------------------------------------");
+
+        for (User user : users) {
+            System.out.printf("%-36s | %-20s | %-15s%n",
+                    user.getId(),
+                    user.getName(),
+                    user.getRole());
+        }
+
+        System.out.println("=================================\n");
     }
 
 
-    private void
+    private void deleteUser(User admin){
+
+        String email;
+        while (true) {
+            System.out.print("Enter Email to Delete       : ");
+            email = scanner.next().trim();
+
+            if (email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+                break;
+            } else {
+                System.out.println("Invalid email format (example: abc@xyz.com)");
+            }
+        }
+
+        if (!userService.emailExists(email)){
+            System.out.println("Email does not exist");
+            return;
+        }
+
+        try {
+            userService.deleteUser(email, admin);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println("Deleting user failed");
+    }
+
+    }
+
+

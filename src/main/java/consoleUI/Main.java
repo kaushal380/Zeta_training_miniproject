@@ -36,6 +36,10 @@ public class Main {
     private static final AssignmentService assignmentService =
             new AssignmentService(projectRepository, userRepository);
 
+
+    private static final UserService userService = new UserService(userRepository);
+
+
     public static void main(String[] args) {
 
         System.out.println("===== BUILDER PORTFOLIO APPLICATION =====");
@@ -54,7 +58,7 @@ public class Main {
         switch (user.getRole()) {
 
             case ADMIN ->
-                    new AdminDashboard(projectService, authService, assignmentService, scanner).start(
+                    new AdminDashboard(projectService, authService, assignmentService, userService,  scanner).start(
                             user
                     );
 
@@ -71,6 +75,7 @@ public class Main {
                     BuilderDashboard.start(
                             user,
                             taskService,
+                            projectService,
                             scanner
                     );
 
