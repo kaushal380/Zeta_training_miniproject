@@ -125,19 +125,25 @@ public class AdminDashboard {
         String name;
         while (true) {
             System.out.print("Enter Project Name        : ");
-            name = scanner.next().trim();
+            name = scanner.nextLine().trim();
             if (!name.isEmpty()) break;
             System.out.println("Project name cannot be empty.");
         }
 
-        System.out.print("Enter Description         : ");
-        String description = scanner.next().trim();
+
+        String description;
+        while (true) {
+            System.out.print("Enter Project description : ");
+            description = scanner.nextLine().trim();
+            if (!description.isEmpty()) break;
+            System.out.println("Project description cannot be empty.");
+        }
 
         LocalDate startDate;
         while (true) {
             try {
                 System.out.print("Enter Start Date (YYYY-MM-DD): ");
-                startDate = LocalDate.parse(scanner.next());
+                startDate = LocalDate.parse(scanner.nextLine());
                 break;
             } catch (Exception e) {
                 System.out.println("Invalid date format.");
@@ -148,7 +154,7 @@ public class AdminDashboard {
         while (true) {
             try {
                 System.out.print("Enter End Date (YYYY-MM-DD)  : ");
-                endDate = LocalDate.parse(scanner.next());
+                endDate = LocalDate.parse(scanner.nextLine());
 
                 if (!endDate.isAfter(startDate)) {
                     System.out.println("End date must be after start date.");
@@ -192,7 +198,7 @@ public class AdminDashboard {
         while (true) {
             try {
                 System.out.print("Enter Estimated Cost      : ");
-                estimatedCost = Double.parseDouble(scanner.next());
+                estimatedCost = Double.parseDouble(scanner.nextLine());
 
                 if (estimatedCost <= 0) {
                     System.out.println("Cost must be positive.");

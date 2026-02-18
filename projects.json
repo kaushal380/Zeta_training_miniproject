@@ -1,0 +1,20 @@
+{
+  "68b633d0-851c-4d22-896a-6106e1440b6f" : {
+    "id" : "68b633d0-851c-4d22-896a-6106e1440b6f",
+    "name" : "satva commercial",
+    "description" : "commercial project in blr",
+    "startDate" : [ 2025, 5, 12 ],
+    "endDate" : [ 2027, 10, 10 ],
+    "status" : "UPCOMING",
+    "type" : "COMMERCIAL",
+    "estimatedCost" : 1000000.0,
+    "location" : {
+      "city" : "Bangalore",
+      "state" : "Karnataka",
+      "zipCode" : "200010",
+      "country" : "India"
+    },
+    "managerId" : null,
+    "builderIds" : [ ]
+  }
+}
