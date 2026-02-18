@@ -26,8 +26,6 @@ public class ProjectService {
         this.projectRepository = projectRepository;
     }
 
-
-
     public boolean createProject(User user,
                                  String name,
                                  String description,

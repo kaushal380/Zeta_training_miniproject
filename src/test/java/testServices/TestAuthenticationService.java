@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import repositories.UserRepository;
 import services.AuthenticationService;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,7 +28,7 @@ public class TestAuthenticationService {
         address = new Address(
                 "Bangalore",
                 "Karnataka",
-                560001,
+                "560001",
                 "India"
         );
     }
@@ -52,7 +53,7 @@ public class TestAuthenticationService {
     void testRegisterDuplicateEmail() {
         authService.register(
                 "Kaushal",
-                "9999999999",
+                BigInteger.valueOf(1234567890),
                 "dup@gmail.com",
                 "password",
                 LocalDate.of(2000, 1, 1),
@@ -62,7 +63,7 @@ public class TestAuthenticationService {
 
         boolean secondAttempt = authService.register(
                 "Another",
-                "8888888888",
+                "1888888888",
                 "dup@gmail.com",
                 "password",
                 LocalDate.of(1999, 1, 1),
@@ -77,7 +78,7 @@ public class TestAuthenticationService {
     void testLoginSuccess() {
         authService.register(
                 "Kaushal",
-                "9999999999",
+                9999999999,
                 "login@gmail.com",
                 "password",
                 LocalDate.of(2000, 1, 1),

@@ -9,6 +9,7 @@ import models.UserCredential;
 import models.enums.UserRole;
 import repositories.UserRepository;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -29,7 +30,7 @@ public class AuthenticationService {
     }
 
     public User register(String name,
-                            String phone,
+                            String  phone,
                             String email,
                             String password,
                             LocalDate dob,

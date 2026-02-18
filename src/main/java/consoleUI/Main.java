@@ -7,6 +7,7 @@ import models.enums.UserRole;
 import repositories.UserRepository;
 import services.AuthenticationService;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -52,75 +53,169 @@ public class Main {
     }
 
 
-    private static User handleRegister(AuthenticationService authService,
-                                       Scanner scanner, boolean admin) {
+    private static User handleRegister(AuthenticationService authService, Scanner scanner, boolean admin) {
 
-        System.out.println("\n======================================");
-        System.out.println("         USER REGISTRATION FORM       ");
-        System.out.println("======================================");
-
-        System.out.print("Enter Name        : ");
-        String name = scanner.next();
+        System.out.println("\n=========== USER REGISTRATION ===========");
 
 
-        System.out.print("Enter Phone       : ");
-        String phone = scanner.next();
+        String name;
+        while (true) {
+            System.out.print("Enter Name        : ");
+            name = scanner.next().trim();
 
-        System.out.print("Enter Email       : ");
-        String email = scanner.next();
+            if (name.matches("[a-zA-Z ]+")) {
+                break;
+            } else {
+                System.out.println("Invalid name. Only alphabets allowed.");
+            }
+        }
 
-        System.out.print("Enter Password    : ");
-        String password = scanner.next();
+        String phone;
+        while (true) {
+            System.out.print("Enter Phone Number: ");
+            phone = scanner.next().trim();
 
-        System.out.print("Enter DOB (YYYY-MM-DD) : ");
-        LocalDate dob = LocalDate.parse(scanner.next());
+            if (phone.matches("[6-9][0-9]{9}")) {
+                break;
+            } else {
+                System.out.println("Invalid phone. Must be 10 digits and start with 6-9.");
+            }
+        }
+
+        String email;
+        while (true) {
+            System.out.print("Enter Email       : ");
+            email = scanner.next().trim();
+
+            if (email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+                break;
+            } else {
+                System.out.println("Invalid email format (example: abc@xyz.com)");
+            }
+        }
+
+        String password;
+        while (true) {
+            System.out.print("Enter Password    : ");
+            password = scanner.next().trim();
+
+            if (!password.isEmpty()) {
+                break;
+            } else {
+                System.out.println("Password cannot be empty.");
+            }
+        }
+
+        LocalDate dob;
+
+        while (true) {
+            try {
+                System.out.print("Enter DOB (YYYY-MM-DD): ");
+                dob = LocalDate.parse(scanner.next().trim());
+
+                if (!dob.isBefore(LocalDate.now())) {
+                    System.out.println("Date of birth must be in the past.");
+                    continue;
+                }
+
+                break;
+
+            } catch (Exception e) {
+                System.out.println("Invalid date format. Use YYYY-MM-DD.");
+            }
+        }
+
 
         System.out.println("\n----------- Address Details -----------");
 
-        System.out.print("Enter City        : ");
-        String city = scanner.next();
 
-        System.out.print("Enter State       : ");
-        String state = scanner.next();
+        String city;
+        while (true) {
+            System.out.print("Enter city        : ");
+            city = scanner.next().trim();
 
-        int zip = getValidChoice(scanner, "Enter Zip Code    :");
+            if (city.matches("[a-zA-Z ]+")) {
+                break;
+            } else {
+                System.out.println("Invalid name. Only alphabets allowed.");
+            }
+        }
 
-        System.out.print("Enter Country     : ");
-        String country = scanner.next();
 
-        System.out.println("======================================\n");
+        String state;
+        while (true) {
+            System.out.print("Enter state        : ");
+            state = scanner.next().trim();
+
+            if (state.matches("[a-zA-Z ]+")) {
+                break;
+            } else {
+                System.out.println("Invalid name. Only alphabets allowed.");
+            }
+        }
+
+
+        String zip;
+        while (true) {
+            System.out.print("Enter Zip Code    : ");
+            zip = scanner.next().trim();
+
+            if (zip.matches("[0-9]{6}")) {  // Indian 6-digit PIN
+                break;
+            } else {
+                System.out.println("Invalid zip. Must be 6 digits.");
+            }
+        }
+
+        String country;
+        while (true) {
+            System.out.print("Enter country        : ");
+            country = scanner.next().trim();
+
+            if (country.matches("[a-zA-Z ]+")) {
+                break;
+            } else {
+                System.out.println("Invalid name. Only alphabets allowed.");
+            }
+        }
+
 
         Address address = new Address(city, state, zip, country);
-
 
         int roleChoice;
 
         if (admin) {
-            System.out.println("""
+            while (true) {
+                System.out.println("""
                     Select Role:
                     1. CLIENT
                     2. PROJECT_MANAGER
                     3. BUILDER
                     """);
 
-            roleChoice = Integer.parseInt(scanner.nextLine());
-        }
-        else{
-            roleChoice = 1;
+                String input = scanner.nextLine();
+
+                if (input.matches("[1-3]")) {
+                    roleChoice = Integer.parseInt(input);
+                    break;
+                } else {
+                    System.out.println("Invalid role selection. Choose 1-3.");
+                }
+            }
+        } else {
+            roleChoice = 1; // Default CLIENT
         }
 
-        UserRole role;
-
-        switch (roleChoice) {
-            case 1 -> role = UserRole.CLIENT;
-            case 2 -> role = UserRole.PROJECT_MANAGER;
-            case 3 -> role = UserRole.BUILDER;
+        UserRole role = switch (roleChoice) {
+            case 1 -> UserRole.CLIENT;
+            case 2 -> UserRole.PROJECT_MANAGER;
+            case 3 -> UserRole.BUILDER;
             default -> throw new RuntimeException("Invalid role selection");
-        }
+        };
 
         User user = authService.register(
                 name,
-                phone,
+                phone, // keep as String unless you truly need BigInteger
                 email,
                 password,
                 dob,

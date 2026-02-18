@@ -43,7 +43,7 @@ public class ProjectDemo {
                 LocalDate.now(),
                 LocalDate.now().plusMonths(12),
                 ProjectType.RESIDENTIAL,
-                new Address("Bangalore", "Karnataka", 560001, "India"),
+                new Address("Bangalore", "Karnataka", "560001", "India"),
                 5_00_00_000
         );
 
@@ -57,7 +57,7 @@ public class ProjectDemo {
                     LocalDate.now(),
                     LocalDate.now().plusMonths(6),
                     ProjectType.COMMERCIAL,
-                    new Address("Mumbai", "MH", 400001, "India"),
+                    new Address("Mumbai", "MH", "400001", "India"),
                     2_00_00_000
             );
         } catch (Exception e) {

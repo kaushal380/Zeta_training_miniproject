@@ -21,7 +21,6 @@ public class Project {
     }
 
 
-
     public Project(String id,
                    String name,
                    String description,

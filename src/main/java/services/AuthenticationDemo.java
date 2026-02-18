@@ -5,6 +5,7 @@ import models.User;
 import models.enums.UserRole;
 import repositories.UserRepository;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -21,7 +22,7 @@ public class AuthenticationDemo {
         Address address = new Address(
                 "Bangalore",
                 "Karnataka",
-                560001,
+                "560001",
                 "India"
         );
 

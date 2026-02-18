@@ -1,0 +1,12 @@
+{
+  "566ebefe-f985-423a-b989-41e452509d2c" : {
+    "id" : "566ebefe-f985-423a-b989-41e452509d2c",
+    "description" : "Foundation + Pillar setup",
+    "status" : "COMPLETED",
+    "startDate" : [ 2026, 2, 18 ],
+    "endDate" : [ 2026, 2, 18 ],
+    "priority" : "HIGH",
+    "assignedBuilderId" : "45f732b0-d90c-4c97-bc77-6ce60a32e7f7",
+    "projectId" : "P1"
+  }
+}

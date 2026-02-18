@@ -2,6 +2,7 @@ package models;
 
 import models.enums.UserRole;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 
 public class User {
