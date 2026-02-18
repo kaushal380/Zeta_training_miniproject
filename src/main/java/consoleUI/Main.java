@@ -54,11 +54,8 @@ public class Main {
         switch (user.getRole()) {
 
             case ADMIN ->
-                    AdminDashboard.start(
-                            user,
-                            projectService,
-                            assignmentService,
-                            scanner
+                    new AdminDashboard(projectService, authService, assignmentService, scanner).start(
+                            user
                     );
 
             case PROJECT_MANAGER ->

@@ -6,6 +6,7 @@ import models.Address;
 import models.Project;
 import models.User;
 import models.enums.ProjectType;
+import services.AssignmentService;
 import services.ProjectService;
 import services.AuthenticationService;
 
@@ -20,12 +21,15 @@ public class AdminDashboard {
     private final ProjectService projectService;
     private final AuthenticationService authService;
     private final Scanner scanner;
+    private final AssignmentService assignmentService;
 
     public AdminDashboard(ProjectService projectService,
                           AuthenticationService authService,
+                          AssignmentService assignmentService,
                           Scanner scanner) {
         this.projectService = projectService;
         this.authService = authService;
+        this.assignmentService = assignmentService;
         this.scanner = scanner;
     }
 
@@ -33,7 +37,11 @@ public class AdminDashboard {
     // MAIN DASHBOARD LOOP
     // ================================
 
-    public void show(User admin) {
+    public void start(User admin){
+        this.showMenu(admin);
+    }
+
+    private void showMenu(User admin) {
 
         while (true) {
 
@@ -249,32 +257,7 @@ public class AdminDashboard {
 
         List<Project> projectList = new ArrayList<>(projects.values());
 
-        System.out.println("\n=========== SELECT PROJECT TO UPDATE ===========");
-
-        for (int i = 0; i < projectList.size(); i++) {
-            Project p = projectList.get(i);
-            System.out.println((i + 1) + ". "
-                    + p.getName()
-                    + " | Status: " + p.getStatus()
-                    + " | Type: " + p.getType());
-        }
-
-        int choice;
-
-        while (true) {
-            System.out.print("Select project number: ");
-            String input = scanner.next();
-
-            if (input.matches("\\d+")) {
-                choice = Integer.parseInt(input);
-                if (choice >= 1 && choice <= projectList.size()) {
-                    break;
-                }
-            }
-            System.out.println("Invalid selection. Try again.");
-        }
-
-        Project selectedProject = projectList.get(choice - 1);
+        Project selectedProject = getProject(projectList, "UPDATE");
         String projectId = selectedProject.getId();
 
         System.out.println("\nUpdating Project: " + selectedProject.getName());
@@ -386,9 +369,55 @@ public class AdminDashboard {
         }
     }
 
+    private Project getProject(List<Project> projectList, String action) {
+        System.out.println("\n=========== SELECT PROJECT TO " + action + " ===========");
+
+        for (int i = 0; i < projectList.size(); i++) {
+            Project p = projectList.get(i);
+            System.out.println((i + 1) + ". "
+                    + p.getName()
+                    + " | Status: " + p.getStatus()
+                    + " | Type: " + p.getType());
+        }
+
+        int choice;
+
+        while (true) {
+            System.out.print("Select project number: ");
+            String input = scanner.next();
+
+            if (input.matches("\\d+")) {
+                choice = Integer.parseInt(input);
+                if (choice >= 1 && choice <= projectList.size()) {
+                    break;
+                }
+            }
+            System.out.println("Invalid selection. Try again.");
+        }
+
+        return projectList.get(choice - 1);
+    }
+
 
     private void deleteProject(User admin) {
-        System.out.println("Deleting project...");
+
+        Map<String, Project> projects = projectService.viewAllProjects();
+
+        if (projects.isEmpty()) {
+            System.out.println("No projects available to update.");
+            return;
+        }
+
+        List<Project> projectList = new ArrayList<>(projects.values());
+
+        Project selectedProject = getProject(projectList, "DELETE");
+        String projectId = selectedProject.getId();
+
+        try {
+            projectService.deleteProject(admin, projectId);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
         // ask projectId + call service
     }
@@ -396,6 +425,10 @@ public class AdminDashboard {
     private void addUser() {
         System.out.println("Adding new user...");
         // call authentication logic
+        User newUser = AuthenticationDashboard.handleRegister(authService, scanner, true);
+
+        System.out.println("registered new user: ");
+        System.out.println(newUser);
     }
 
     private void assignProjectToManager() {
@@ -403,16 +436,5 @@ public class AdminDashboard {
         // call assignment service
     }
 
-    private void viewAllManagers() {
-        System.out.println("Viewing all managers...");
-        // fetch users by role
-    }
 
-    private void viewAllBuilders() {
-        System.out.println("Viewing all builders...");
-    }
-
-    private void viewAllClients() {
-        System.out.println("Viewing all clients...");
-    }
-}
+    private void
