@@ -2,32 +2,17 @@
   "login@gmail.com" : {
     "password" : "password",
     "user" : {
-      "id" : "fdb721cb-48f2-4e9d-a06f-b68e56ca7a8f",
+      "id" : "f28d2c29-8fbc-426b-99b4-e962692b9d1e",
+      "name" : "Kaushal",
+      "phoneNumber" : "9999999999",
       "email" : "login@gmail.com",
-      "role" : "ADMIN"
-    }
-  },
-  "dup@gmail.com" : {
-    "password" : "password",
-    "user" : {
-      "id" : "1fa1edc6-0592-430e-ac60-6cb5f79ad107",
-      "email" : "dup@gmail.com",
-      "role" : "PROJECT_MANAGER"
-    }
-  },
-  "test@gmail.com" : {
-    "password" : "password",
-    "user" : {
-      "id" : "bba1df02-ec77-4978-928b-9b6acbeed5b9",
-      "email" : "test@gmail.com",
-      "role" : "PROJECT_MANAGER"
-    }
-  },
-  "wrongpass@gmail.com" : {
-    "password" : "password",
-    "user" : {
-      "id" : "f6ede527-5068-496d-aa9d-33143ef09586",
-      "email" : "wrongpass@gmail.com",
+      "dateOfBirth" : [ 2000, 1, 1 ],
+      "address" : {
+        "city" : "Bangalore",
+        "state" : "Karnataka",
+        "zipCode" : "560001",
+        "country" : "India"
+      },
       "role" : "ADMIN"
     }
   }

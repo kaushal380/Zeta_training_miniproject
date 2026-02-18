@@ -19,14 +19,7 @@ public class Task {
     public Task() {
     }
 
-    public Task(String id,
-                String description,
-                TaskStatus status,
-                LocalDate startDate,
-                LocalDate endDate,
-                Priority priority,
-                String assignedBuilderId,
-                String projectId) {
+    public Task(String id, String description, TaskStatus status, LocalDate startDate, LocalDate endDate, Priority priority, String assignedBuilderId, String projectId) {
 
         this.id = id;
         this.description = description;
