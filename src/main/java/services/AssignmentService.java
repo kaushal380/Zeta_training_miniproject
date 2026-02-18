@@ -38,7 +38,19 @@ public class AssignmentService {
         User manager = getUserById(managerId);
 
         if (manager == null || manager.getRole() != UserRole.PROJECT_MANAGER) {
+
             logger.warning("Invalid manager ID: " + managerId);
+            return false;
+        }
+
+        if (project.getManagerId() != null) {
+
+            if (project.getManagerId().equals(managerId)) {
+                logger.info("Manager already assigned to this project.");
+                return true;
+            }
+
+            logger.warning("Project already has a manager assigned.");
             return false;
         }
 
@@ -71,14 +83,17 @@ public class AssignmentService {
         User builder = getUserById(builderId);
 
         if (builder == null || builder.getRole() != UserRole.BUILDER) {
+
             logger.warning("Invalid builder ID: " + builderId);
             return false;
         }
 
-        if (!project.getBuilderIds().contains(builderId)) {
-            project.getBuilderIds().add(builderId);
+        if (project.getBuilderIds().contains(builderId)) {
+            logger.info("Builder already assigned to this project.");
+            return true;
         }
 
+        project.getBuilderIds().add(builderId);
         projectRepository.updateProject(projectId, project);
 
         logger.info("Project " + projectId + " assigned to Builder " + builder.getName());
@@ -87,8 +102,11 @@ public class AssignmentService {
     }
 
     private User getUserById(String userId) {
+
         for (UserCredential credential : userRepository.getAllUsers().values()) {
+
             User user = credential.getUser();
+
             if (user.getId().equals(userId)) {
                 return user;
             }
