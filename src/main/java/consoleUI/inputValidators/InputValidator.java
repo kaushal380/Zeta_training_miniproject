@@ -5,21 +5,19 @@ import java.util.Scanner;
 
 public class InputValidator {
 
-    public static int getValidChoice(Scanner sc, String message){
+    public static int getValidChoice(Scanner scanner, String message) {
+
         while (true) {
-            try {
-                System.out.print(message);
-                int value = sc.nextInt();
+            System.out.print(message + ": ");
+            String input = scanner.nextLine().trim();
 
-                return value;
-
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
-                sc.nextLine();
+            if (input.matches("\\d+")) {
+                return Integer.parseInt(input);
             }
+
+            System.out.println("Please enter a valid number.");
         }
     }
-
 
 
 

@@ -13,18 +13,15 @@ import services.AuthenticationService;
 import services.UserService;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class AdminDashboard {
 
     private final ProjectService projectService;
     private final AuthenticationService authService;
-    private final Scanner scanner;
     private final AssignmentService assignmentService;
     private final UserService userService;
+    private final Scanner scanner;
 
     public AdminDashboard(ProjectService projectService,
                           AuthenticationService authService,
@@ -38,219 +35,99 @@ public class AdminDashboard {
         this.scanner = scanner;
     }
 
-    // ================================
-    // MAIN DASHBOARD LOOP
-    // ================================
-
-    public void start(User admin){
-        this.showMenu(admin);
-    }
-
-    private void showMenu(User admin) {
-
+    public void start(User admin) {
         while (true) {
 
-            System.out.println("\n==================================");
-            System.out.println("        ADMIN DASHBOARD");
-            System.out.println("==================================");
-            System.out.println("1. View All Projects");
+            System.out.println("\n====================================");
+            System.out.println("            ADMIN PANEL");
+            System.out.println("====================================");
+            System.out.println("1. View Projects");
             System.out.println("2. Create Project");
             System.out.println("3. Update Project");
             System.out.println("4. Delete Project");
             System.out.println("5. Register User");
             System.out.println("6. Assign Project to Manager");
-            System.out.println("7. View All Managers");
-            System.out.println("8. View All Builders");
-            System.out.println("9. View All Clients");
+            System.out.println("7. View All Users");
+            System.out.println("8. Delete User");
             System.out.println("0. Logout");
-            System.out.println("==================================");
+            System.out.println("====================================");
 
-            int choice = InputValidator.getValidChoice(scanner, "Enter choice");
+            int choice = InputValidator.getValidChoice(scanner, "Select an option");
+
             switch (choice) {
-
                 case 1 -> viewAllProjects();
                 case 2 -> createProject(admin);
                 case 3 -> updateProject(admin);
                 case 4 -> deleteProject(admin);
-                case 5 -> addUser();
-                case 6 -> assignProjectToManager(admin);
+                case 5 -> registerUser();
+                case 6 -> assignProject(admin);
                 case 7 -> viewAllUsers(admin);
                 case 8 -> deleteUser(admin);
                 case 0 -> {
                     System.out.println("Logging out...");
                     return;
                 }
-                default -> System.out.println("Invalid choice. Try again.");
+                default -> System.out.println("Please select a valid option.");
             }
         }
     }
-
-    // ================================
-    // OPTION METHODS
-    // ================================
 
     private void viewAllProjects() {
 
         Map<String, Project> projects = projectService.viewAllProjects();
 
         if (projects.isEmpty()) {
-            System.out.println("\nNo projects available.");
+            System.out.println("\nNo projects found.");
             return;
         }
 
-        System.out.println("\n=========== ALL PROJECTS ===========");
+        System.out.println("\n========== PROJECT LIST ==========");
 
         int index = 1;
-
         for (Project project : projects.values()) {
-            System.out.println(index + ". "
+            System.out.println(index++ + ". "
                     + project.getName()
-                    + " | Status: " + project.getStatus()
-                    + " | Type: " + project.getType()
+                    + " | " + project.getStatus()
+                    + " | " + project.getType()
                     + " | Cost: " + project.getEstimatedCost());
-            index++;
         }
-
-        System.out.println("====================================");
     }
-
-
-
-
 
     private void createProject(User admin) {
 
-        System.out.println("\n=========== CREATE PROJECT ===========");
+        System.out.println("\n========== CREATE PROJECT ==========");
 
-        String name;
-        while (true) {
-            System.out.print("Enter Project Name        : ");
-            name = scanner.nextLine().trim();
-            if (!name.isEmpty()) break;
-            System.out.println("Project name cannot be empty.");
-        }
+        String name = getNonEmptyInput("Project Name");
+        String description = getNonEmptyInput("Project Description");
 
-
-        String description;
-        while (true) {
-            System.out.print("Enter Project description : ");
-            description = scanner.nextLine().trim();
-            if (!description.isEmpty()) break;
-            System.out.println("Project description cannot be empty.");
-        }
-
-        LocalDate startDate;
-        while (true) {
-            try {
-                System.out.print("Enter Start Date (YYYY-MM-DD): ");
-                startDate = LocalDate.parse(scanner.nextLine());
-                break;
-            } catch (Exception e) {
-                System.out.println("Invalid date format.");
-            }
-        }
-
+        LocalDate startDate = getValidDate("Start Date (YYYY-MM-DD)");
         LocalDate endDate;
-        while (true) {
-            try {
-                System.out.print("Enter End Date (YYYY-MM-DD)  : ");
-                endDate = LocalDate.parse(scanner.nextLine());
-
-                if (!endDate.isAfter(startDate)) {
-                    System.out.println("End date must be after start date.");
-                    continue;
-                }
-
-                break;
-
-            } catch (Exception e) {
-                System.out.println("Invalid date format.");
-            }
-        }
-
-        ProjectType type = null;
 
         while (true) {
-            String msg = """
-                Select Project Type:
-                1. RESIDENTIAL
-                2. COMMERCIAL
-                3. GOVERNMENT
-                4. INDUSTRIAL
-                """;
-
-            int input = InputValidator.getValidChoice(scanner, msg);
-
-            switch (input) {
-                case 1 -> type = ProjectType.RESIDENTIAL;
-                case 2 -> type = ProjectType.COMMERCIAL;
-                case 3 -> type = ProjectType.GOVERNMENT;
-                case 4 -> type = ProjectType.INDUSTRIAL;
-                default -> {
-                    System.out.println("Invalid selection.");
-                    continue;
-                }
-            }
-            break;
+            endDate = getValidDate("End Date (YYYY-MM-DD)");
+            if (endDate.isAfter(startDate)) break;
+            System.out.println("End date must be after start date.");
         }
 
-        double estimatedCost;
-        while (true) {
-            try {
-                System.out.print("Enter Estimated Cost      : ");
-                estimatedCost = Double.parseDouble(scanner.nextLine());
+        ProjectType type = getProjectType();
 
-                if (estimatedCost <= 0) {
-                    System.out.println("Cost must be positive.");
-                    continue;
-                }
-                break;
+        double cost = getPositiveDouble("Estimated Cost");
 
-            } catch (Exception e) {
-                System.out.println("Invalid cost value.");
-            }
-        }
-
-        System.out.println("\n----------- Project Location -----------");
-
-        System.out.print("Enter City         : ");
-        String city = scanner.nextLine();
-
-        System.out.print("Enter State        : ");
-        String state = scanner.nextLine();
-
-        String zip;
-        while (true) {
-            System.out.print("Enter Zip Code     : ");
-            zip = scanner.nextLine();
-            if (zip.matches("[0-9]{6}")) break;
-            System.out.println("Invalid zip. Must be 6 digits.");
-        }
-
-        System.out.print("Enter Country      : ");
-        String country = scanner.nextLine();
+        System.out.println("\nEnter Project Location Details");
+        String city = getNonEmptyInput("City");
+        String state = getNonEmptyInput("State");
+        String zip = getValidZip();
+        String country = getNonEmptyInput("Country");
 
         Address location = new Address(city, state, zip, country);
 
-        // 8️⃣ Call Service
         try {
             boolean created = projectService.createProject(
-                    admin,
-                    name,
-                    description,
-                    startDate,
-                    endDate,
-                    type,
-                    location,
-                    estimatedCost
-            );
+                    admin, name, description, startDate, endDate, type, location, cost);
 
-            if (created) {
-                System.out.println("\nProject created successfully!");
-            } else {
-                System.out.println("\nFailed to create project.");
-            }
-
+            System.out.println(created
+                    ? "Project created successfully."
+                    : "Project creation failed.");
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -258,248 +135,138 @@ public class AdminDashboard {
 
     private void updateProject(User admin) {
 
-        Map<String, Project> projects = projectService.viewAllProjects();
+        List<Project> projectList =
+                new ArrayList<>(projectService.viewAllProjects().values());
 
-        if (projects.isEmpty()) {
-            System.out.println("No projects available to update.");
+        if (projectList.isEmpty()) {
+            System.out.println("No projects available.");
             return;
         }
 
-        List<Project> projectList = new ArrayList<>(projects.values());
-
-        Project selectedProject = getProject(projectList, "UPDATE");
-        String projectId = selectedProject.getId();
-
-        System.out.println("\nUpdating Project: " + selectedProject.getName());
+        Project project = selectProject(projectList, "UPDATE");
 
         ProjectUpdateRequest request = new ProjectUpdateRequest();
 
-        System.out.print("New Name (Enter to skip): ");
-        String name = scanner.nextLine();
+        System.out.print("New Name (press Enter to skip): ");
+        String name = scanner.nextLine().trim();
         if (!name.isBlank()) {
             request.setName(name);
         }
 
-        System.out.print("New Description (Enter to skip): ");
-        String desc = scanner.nextLine();
+        System.out.print("New Description (press Enter to skip): ");
+        String desc = scanner.nextLine().trim();
         if (!desc.isBlank()) {
             request.setDescription(desc);
         }
 
-        System.out.print("New Start Date (YYYY-MM-DD) or Enter to skip: ");
-        String startInput = scanner.nextLine();
-        if (!startInput.isBlank()) {
-            try {
-                request.setStartDate(LocalDate.parse(startInput));
-            } catch (Exception e) {
-                System.out.println("Invalid date format. Skipping start date.");
-            }
-        }
+        System.out.print("New End Date (YYYY-MM-DD) (press Enter to skip): ");
+        String endInput = scanner.nextLine().trim();
 
-        System.out.print("New End Date (YYYY-MM-DD) or Enter to skip: ");
-        String endInput = scanner.nextLine();
         if (!endInput.isBlank()) {
             try {
-                request.setEndDate(LocalDate.parse(endInput));
+                LocalDate newEndDate = LocalDate.parse(endInput);
+
+                LocalDate referenceStart =
+                        project.getStartDate();
+
+                if (!newEndDate.isAfter(referenceStart)) {
+                    System.out.println("End date must be after start date. Skipping update.");
+                } else {
+                    request.setEndDate(newEndDate);
+                }
+
             } catch (Exception e) {
-                System.out.println("Invalid date format. Skipping end date.");
+                System.out.println("Invalid date format. Skipping end date update.");
             }
         }
 
-        System.out.print("New Estimated Cost or Enter to skip: ");
-        String costInput = scanner.nextLine();
+        System.out.print("New Estimated Cost (press Enter to skip): ");
+        String costInput = scanner.nextLine().trim();
+
         if (!costInput.isBlank()) {
             try {
                 double cost = Double.parseDouble(costInput);
                 if (cost > 0) {
                     request.setEstimatedCost(cost);
                 } else {
-                    System.out.println("Cost must be positive. Skipping cost.");
+                    System.out.println("Cost must be positive. Skipping update.");
                 }
             } catch (Exception e) {
-                System.out.println("Invalid cost value. Skipping cost.");
+                System.out.println("Invalid cost value. Skipping update.");
             }
-        }
-
-        System.out.println("""
-            Select New Project Type (or press Enter to skip):
-            1. RESIDENTIAL
-            2. COMMERCIAL
-            3. GOVERNMENT
-            4. INDUSTRIAL
-            """);
-
-        String typeInput = scanner.nextLine();
-        if (!typeInput.isBlank()) {
-            switch (typeInput) {
-                case "1" -> request.setType(ProjectType.RESIDENTIAL);
-                case "2" -> request.setType(ProjectType.COMMERCIAL);
-                case "3" -> request.setType(ProjectType.GOVERNMENT);
-                case "4" -> request.setType(ProjectType.INDUSTRIAL);
-                default -> System.out.println("Invalid type. Skipping.");
-            }
-        }
-
-        System.out.print("Update location? (yes/no): ");
-        String locChoice = scanner.nextLine();
-
-        if (locChoice.equalsIgnoreCase("yes")) {
-
-            System.out.print("City: ");
-            String city = scanner.nextLine();
-
-            System.out.print("State: ");
-            String state = scanner.nextLine();
-
-            String zip;
-            while (true) {
-                System.out.print("Zip Code (6 digits): ");
-                zip = scanner.nextLine();
-                if (zip.matches("[0-9]{6}")) break;
-                System.out.println("Invalid zip.");
-            }
-
-            System.out.print("Country: ");
-            String country = scanner.nextLine();
-
-            request.setLocation(new Address(city, state, zip, country));
         }
 
         try {
-            boolean updated = projectService.updateProject(admin, projectId, request);
+            boolean updated =
+                    projectService.updateProject(admin, project.getId(), request);
 
-            if (updated) {
-                System.out.println("Project updated successfully!");
-            } else {
-                System.out.println("Update failed.");
-            }
+            System.out.println(updated
+                    ? "Project updated successfully."
+                    : "Update failed.");
 
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
 
-    private Project getProject(List<Project> projectList, String action) {
-        System.out.println("\n=========== SELECT PROJECT TO " + action + " ===========");
-
-        for (int i = 0; i < projectList.size(); i++) {
-            Project p = projectList.get(i);
-            System.out.println((i + 1) + ". "
-                    + p.getName()
-                    + " | Status: " + p.getStatus()
-                    + " | Type: " + p.getType());
-        }
-
-        int choice;
-
-        while (true) {
-            System.out.print("Select project number: ");
-            String input = scanner.next();
-
-            if (input.matches("\\d+")) {
-                choice = Integer.parseInt(input);
-                if (choice >= 1 && choice <= projectList.size()) {
-                    break;
-                }
-            }
-            System.out.println("Invalid selection. Try again.");
-        }
-
-        return projectList.get(choice - 1);
-    }
-
-
     private void deleteProject(User admin) {
 
-        Map<String, Project> projects = projectService.viewAllProjects();
+        List<Project> projectList = new ArrayList<>(projectService.viewAllProjects().values());
 
-        if (projects.isEmpty()) {
-            System.out.println("No projects available to update.");
+        if (projectList.isEmpty()) {
+            System.out.println("No projects available.");
             return;
         }
 
-        List<Project> projectList = new ArrayList<>(projects.values());
-
-        Project selectedProject = getProject(projectList, "DELETE");
-        String projectId = selectedProject.getId();
+        Project project = selectProject(projectList, "DELETE");
 
         try {
-            projectService.deleteProject(admin, projectId);
+            boolean deleted = projectService.deleteProject(admin, project.getId());
+            System.out.println(deleted ? "Project deleted." : "Deletion failed.");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
-
-        // ask projectId + call service
     }
 
-    private void addUser() {
-        System.out.println("Adding new user...");
-        // call authentication logic
-        User newUser = AuthenticationDashboard.handleRegister(authService, scanner, true);
+    private void assignProject(User admin) {
 
-        System.out.println("registered new user: ");
-        System.out.println(newUser);
-    }
+        List<Project> projectList = new ArrayList<>(projectService.viewAllProjects().values());
 
-    private void assignProjectToManager(User admin) {
-
-        System.out.println("Assigning project to manager...");
-
-
-        Map<String, Project> projects = projectService.viewAllProjects();
-
-        if (projects.isEmpty()) {
-            System.out.println("No projects available to update.");
+        if (projectList.isEmpty()) {
+            System.out.println("No projects available.");
             return;
         }
 
-        List<Project> projectList = new ArrayList<>(projects.values());
-
-        Project selectedProject = getProject(projectList, "ASSIGNMENT");
-
-
+        Project project = selectProject(projectList, "ASSIGN");
 
         List<User> managers = userService.getUsersByRole(UserRole.PROJECT_MANAGER);
 
         if (managers.isEmpty()) {
-            System.out.println("No project managers available.");
+            System.out.println("No managers available.");
             return;
         }
 
-        System.out.println("\n=========== SELECT MANAGER ===========");
-
+        System.out.println("\nSelect Manager:");
         for (int i = 0; i < managers.size(); i++) {
-            User m = managers.get(i);
-            System.out.println((i + 1) + ". "
-                    + m.getName()
-                    + " | Email: " + m.getEmail());
+            System.out.println((i + 1) + ". " + managers.get(i).getName());
         }
 
-        int managerChoice;
+        int choice = InputValidator.getValidChoice(scanner, "Enter manager number");
 
-        while (true) {
-            System.out.print("Select manager number: ");
-            String input = scanner.nextLine();
-
-            if (input.matches("\\d+")) {
-                managerChoice = Integer.parseInt(input);
-                if (managerChoice >= 1 && managerChoice <= managers.size()) {
-                    break;
-                }
-            }
-            System.out.println("Invalid selection. Try again.");
+        if (choice < 1 || choice > managers.size()) {
+            System.out.println("Invalid selection.");
+            return;
         }
 
-        User selectedManager = managers.get(managerChoice - 1);
+        User manager = managers.get(choice - 1);
 
         try {
-            assignmentService.assignProjectToManager(admin, selectedProject.getId(), selectedManager.getId());
+            assignmentService.assignProjectToManager(admin, project.getId(), manager.getId());
+            System.out.println("Project assigned successfully.");
+        } catch (Exception e) {
+            System.out.println("Assignment failed: " + e.getMessage());
         }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-            System.out.println("Assignment failed");
-        }
+    }
 
     private void viewAllUsers(User admin) {
 
@@ -510,52 +277,131 @@ public class AdminDashboard {
             return;
         }
 
-        System.out.println("\n=========== ALL USERS ===========");
-
-        System.out.printf("%-36s | %-20s | %-15s%n",
-                "ID", "Name", "Role");
-
-        System.out.println("--------------------------------------------------------------------------");
+        System.out.printf("%-36s | %-20s | %-15s%n", "ID", "Name", "Role");
+        System.out.println("--------------------------------------------------------------------");
 
         for (User user : users) {
             System.out.printf("%-36s | %-20s | %-15s%n",
-                    user.getId(),
-                    user.getName(),
-                    user.getRole());
+                    user.getId(), user.getName(), user.getRole());
         }
-
-        System.out.println("=================================\n");
     }
 
-
-    private void deleteUser(User admin){
+    private void deleteUser(User admin) {
 
         String email;
-        while (true) {
-            System.out.print("Enter Email to Delete       : ");
-            email = scanner.next().trim();
 
-            if (email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+        while (true) {
+            System.out.print("Enter user email to delete: ");
+            email = scanner.nextLine().trim();
+
+            if (email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"))
                 break;
-            } else {
-                System.out.println("Invalid email format (example: abc@xyz.com)");
-            }
+
+            System.out.println("Invalid email format.");
         }
 
-        if (!userService.emailExists(email)){
-            System.out.println("Email does not exist");
+        if (!userService.emailExists(email)) {
+            System.out.println("No user found with this email.");
             return;
         }
 
         try {
             userService.deleteUser(email, admin);
+            System.out.println("User deleted successfully.");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    private void registerUser() {
+        User user = AuthenticationDashboard.handleRegister(authService, scanner, true);
+        if (user != null) {
+            System.out.println("User registered successfully.");
+        }
+    }
+
+    private Project selectProject(List<Project> list, String action) {
+
+        System.out.println("\nSelect project to " + action + ":");
+
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println((i + 1) + ". " + list.get(i).getName());
         }
 
-        System.out.println("Deleting user failed");
+        while (true) {
+            System.out.print("Enter number: ");
+            String input = scanner.nextLine().trim();
+
+            if (input.matches("\\d+")) {
+                int choice = Integer.parseInt(input);
+                if (choice >= 1 && choice <= list.size())
+                    return list.get(choice - 1);
+            }
+
+            System.out.println("Invalid selection.");
+        }
     }
 
+    private String getNonEmptyInput(String field) {
+        while (true) {
+            System.out.print(field + ": ");
+            String input = scanner.nextLine().trim();
+            if (!input.isEmpty()) return input;
+            System.out.println(field + " cannot be empty.");
+        }
     }
 
+    private LocalDate getValidDate(String label) {
+        while (true) {
+            try {
+                System.out.print(label + ": ");
+                return LocalDate.parse(scanner.nextLine().trim());
+            } catch (Exception e) {
+                System.out.println("Invalid date format.");
+            }
+        }
+    }
 
+    private double getPositiveDouble(String label) {
+        while (true) {
+            try {
+                System.out.print(label + ": ");
+                double value = Double.parseDouble(scanner.nextLine().trim());
+                if (value > 0) return value;
+            } catch (Exception ignored) {}
+            System.out.println("Please enter a valid positive number.");
+        }
+    }
+
+    private String getValidZip() {
+        while (true) {
+            System.out.print("Zip Code (6 digits): ");
+            String zip = scanner.nextLine().trim();
+            if (zip.matches("[0-9]{6}")) return zip;
+            System.out.println("Invalid zip code.");
+        }
+    }
+
+    private ProjectType getProjectType() {
+
+        while (true) {
+            System.out.println("""
+                Select Project Type:
+                1. RESIDENTIAL
+                2. COMMERCIAL
+                3. GOVERNMENT
+                4. INDUSTRIAL
+                """);
+
+            String input = scanner.nextLine().trim();
+
+            switch (input) {
+                case "1" -> { return ProjectType.RESIDENTIAL; }
+                case "2" -> { return ProjectType.COMMERCIAL; }
+                case "3" -> { return ProjectType.GOVERNMENT; }
+                case "4" -> { return ProjectType.INDUSTRIAL; }
+                default -> System.out.println("Invalid selection.");
+            }
+        }
+    }
+}

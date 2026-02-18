@@ -70,7 +70,7 @@ public class UserService {
 
     public boolean deleteUser(String email, User user) {
 
-        if(user.getRole() != UserRole.PROJECT_MANAGER){
+        if(user.getRole() != UserRole.ADMIN){
             throw new RuntimeException("Only admin can delete a user");
         }
 

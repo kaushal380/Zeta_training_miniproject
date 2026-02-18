@@ -14,205 +14,187 @@ public class AuthenticationDashboard {
 
     public static User handleLogin(AuthenticationService authService, Scanner scanner) {
 
+        System.out.println("\n========== LOGIN ==========");
+
         String email;
         while (true) {
-            System.out.print("Enter Email       : ");
-            email = scanner.next().trim();
+            System.out.print("Email: ");
+            email = scanner.nextLine().trim();
 
-            if (email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            if (email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"))
                 break;
-            } else {
-                System.out.println("Invalid email format (example: abc@xyz.com)");
-            }
+
+            System.out.println("That doesn't look like a valid email.");
         }
 
         String password;
         while (true) {
-            System.out.print("Enter Password    : ");
-            password = scanner.next().trim();
+            System.out.print("Password: ");
+            password = scanner.nextLine().trim();
 
-            if (!password.isEmpty()) {
+            if (!password.isEmpty())
                 break;
-            } else {
-                System.out.println("Password cannot be empty.");
-            }
+
+            System.out.println("Password cannot be empty.");
         }
 
         User user = authService.login(email, password);
 
         if (user != null) {
-            System.out.println("Login successful! Welcome " + user.getRole());
+            System.out.println("Welcome back, " + user.getName() + "!");
             return user;
         }
 
-        System.out.println("Invalid credentials. Try again.");
+        System.out.println("Incorrect email or password.");
         return null;
     }
 
+    public static User handleRegister(AuthenticationService authService,
+                                      Scanner scanner,
+                                      boolean admin) {
 
-    public static User handleRegister(AuthenticationService authService, Scanner scanner, boolean admin) {
-
-        System.out.println("\n=========== USER REGISTRATION ===========");
-
+        System.out.println("\n========== REGISTER USER ==========");
 
         String name;
         while (true) {
-            System.out.print("Enter Name        : ");
-            name = scanner.next().trim();
+            System.out.print("Full Name: ");
+            name = scanner.nextLine().trim();
 
-            if (name.matches("[a-zA-Z ]+")) {
+            if (name.matches("[a-zA-Z ]+"))
                 break;
-            } else {
-                System.out.println("Invalid name. Only alphabets allowed.");
-            }
+
+            System.out.println("Name should contain only alphabets.");
         }
 
         String phone;
         while (true) {
-            System.out.print("Enter Phone Number: ");
-            phone = scanner.next().trim();
+            System.out.print("Phone Number: ");
+            phone = scanner.nextLine().trim();
 
-            if (phone.matches("[6-9][0-9]{9}")) {
+            if (phone.matches("[6-9][0-9]{9}"))
                 break;
-            } else {
-                System.out.println("Invalid phone. Must be 10 digits and start with 6-9.");
-            }
+
+            System.out.println("Enter a valid 10-digit Indian number starting with 6-9.");
         }
 
         String email;
         while (true) {
-            System.out.print("Enter Email       : ");
-            email = scanner.next().trim();
+            System.out.print("Email: ");
+            email = scanner.nextLine().trim();
 
-            if (email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            if (email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"))
                 break;
-            } else {
-                System.out.println("Invalid email format (example: abc@xyz.com)");
-            }
+
+            System.out.println("Enter a valid email (example: abc@xyz.com).");
         }
 
         String password;
         while (true) {
-            System.out.print("Enter Password    : ");
-            password = scanner.next().trim();
+            System.out.print("Password: ");
+            password = scanner.nextLine().trim();
 
-            if (!password.isEmpty()) {
+            if (!password.isEmpty())
                 break;
-            } else {
-                System.out.println("Password cannot be empty.");
-            }
+
+            System.out.println("Password cannot be empty.");
         }
 
         LocalDate dob;
-
         while (true) {
             try {
-                System.out.print("Enter DOB (YYYY-MM-DD): ");
-                dob = LocalDate.parse(scanner.next().trim());
+                System.out.print("Date of Birth (YYYY-MM-DD): ");
+                dob = LocalDate.parse(scanner.nextLine().trim());
 
-                if (!dob.isBefore(LocalDate.now())) {
-                    System.out.println("Date of birth must be in the past.");
-                    continue;
-                }
+                if (dob.isBefore(LocalDate.now()))
+                    break;
 
-                break;
+                System.out.println("Date of birth must be in the past.");
 
             } catch (Exception e) {
-                System.out.println("Invalid date format. Use YYYY-MM-DD.");
+                System.out.println("Invalid date format.");
             }
         }
 
-
-        System.out.println("\n----------- Address Details -----------");
-
+        System.out.println("\nEnter Address Details");
 
         String city;
         while (true) {
-            System.out.print("Enter city        : ");
-            city = scanner.next().trim();
+            System.out.print("City: ");
+            city = scanner.nextLine().trim();
 
-            if (city.matches("[a-zA-Z ]+")) {
+            if (city.matches("[a-zA-Z ]+"))
                 break;
-            } else {
-                System.out.println("Invalid name. Only alphabets allowed.");
-            }
-        }
 
+            System.out.println("City should contain only alphabets.");
+        }
 
         String state;
         while (true) {
-            System.out.print("Enter state        : ");
-            state = scanner.next().trim();
+            System.out.print("State: ");
+            state = scanner.nextLine().trim();
 
-            if (state.matches("[a-zA-Z ]+")) {
+            if (state.matches("[a-zA-Z ]+"))
                 break;
-            } else {
-                System.out.println("Invalid name. Only alphabets allowed.");
-            }
-        }
 
+            System.out.println("State should contain only alphabets.");
+        }
 
         String zip;
         while (true) {
-            System.out.print("Enter Zip Code    : ");
-            zip = scanner.next().trim();
+            System.out.print("Zip Code (6 digits): ");
+            zip = scanner.nextLine().trim();
 
-            if (zip.matches("[0-9]{6}")) {  // Indian 6-digit PIN
+            if (zip.matches("[0-9]{6}"))
                 break;
-            } else {
-                System.out.println("Invalid zip. Must be 6 digits.");
-            }
+
+            System.out.println("Zip must be 6 digits.");
         }
 
         String country;
         while (true) {
-            System.out.print("Enter country        : ");
-            country = scanner.next().trim();
+            System.out.print("Country: ");
+            country = scanner.nextLine().trim();
 
-            if (country.matches("[a-zA-Z ]+")) {
+            if (country.matches("[a-zA-Z ]+"))
                 break;
-            } else {
-                System.out.println("Invalid name. Only alphabets allowed.");
-            }
-        }
 
+            System.out.println("Country should contain only alphabets.");
+        }
 
         Address address = new Address(city, state, zip, country);
 
-        int roleChoice;
+        int roleChoice = 1;
 
         if (admin) {
             while (true) {
                 System.out.println("""
-                    Select Role:
-                    1. CLIENT
-                    2. PROJECT_MANAGER
-                    3. BUILDER
-                    """);
+                        Select Role:
+                        1. Client
+                        2. Project Manager
+                        3. Builder
+                        """);
 
-                String input = scanner.nextLine();
+                String input = scanner.nextLine().trim();
 
                 if (input.matches("[1-3]")) {
                     roleChoice = Integer.parseInt(input);
                     break;
-                } else {
-                    System.out.println("Invalid role selection. Choose 1-3.");
                 }
+
+                System.out.println("Please select 1, 2 or 3.");
             }
-        } else {
-            roleChoice = 1; // Default CLIENT
         }
 
         UserRole role = switch (roleChoice) {
             case 1 -> UserRole.CLIENT;
             case 2 -> UserRole.PROJECT_MANAGER;
             case 3 -> UserRole.BUILDER;
-            default -> throw new RuntimeException("Invalid role selection");
+            default -> UserRole.CLIENT;
         };
 
         User user = authService.register(
                 name,
-                phone, // keep as String unless you truly need BigInteger
+                phone,
                 email,
                 password,
                 dob,
@@ -221,46 +203,44 @@ public class AuthenticationDashboard {
         );
 
         if (user != null) {
-            System.out.println("Registration successful!");
+            System.out.println("Registration successful. Welcome, " + user.getName() + "!");
             return user;
-        } else {
-            System.out.println("Registration failed.");
-            return null;
         }
+
+        System.out.println("Registration failed. Email might already exist.");
+        return null;
     }
 
-
-
-    public static User authenticate(AuthenticationService authService, Scanner scanner) {
+    public static User authenticate(AuthenticationService authService,
+                                    Scanner scanner) {
 
         while (true) {
 
-            String message = """
-                Authentication Menu:
-                1. Login
-                2. Register
-                3. Logout
-                Please make a choice: 
-                """;
+            System.out.println("""
+                    ==============================
+                    1. Login
+                    2. Register
+                    3. Exit
+                    ==============================
+                    """);
 
-            int choice = getValidChoice(scanner, message);
+            int choice = getValidChoice(scanner, "Choose an option");
 
             switch (choice) {
-
-                case 1:
-                    return handleLogin(authService, scanner);
-
-                case 2:
-                    return handleRegister(authService, scanner, false);
-
-                case 3:
-                    System.out.println("Logging out...");
+                case 1 -> {
+                    User user = handleLogin(authService, scanner);
+                    if (user != null) return user;
+                }
+                case 2 -> {
+                    User user = handleRegister(authService, scanner, false);
+                    if (user != null) return user;
+                }
+                case 3 -> {
+                    System.out.println("Goodbye!");
                     return null;
-
-                default:
-                    System.out.println("Invalid choice. Try again.");
+                }
+                default -> System.out.println("Please choose a valid option.");
             }
         }
     }
-
 }
