@@ -195,6 +195,8 @@ public class ProjectManagerDashboard {
         if (project.getStatus() == ProjectStatus.COMPLETED){
             System.out.println("The project is marked completed, cannot create new tasks");
             return;
+        } else if (project.getStatus() == ProjectStatus.UPCOMING) {
+            project.setStatus(ProjectStatus.IN_PROGRESS);
         }
 
         boolean created = taskService.createTask(

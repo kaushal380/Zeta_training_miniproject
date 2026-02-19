@@ -14,7 +14,7 @@
       "zipCode" : "345543",
       "country" : "India"
     },
-    "managerId" : null,
+    "managerId" : "b7907814-ea27-4ead-ae90-469ba5f0fc75",
     "builderIds" : [ ],
     "clientIds" : [ ]
   },
@@ -35,25 +35,25 @@
     },
     "managerId" : "9e3415b7-7642-460e-bb2d-633a08a824f8",
     "builderIds" : [ "9a0df790-75a5-49f1-91d7-ee613a8ca189" ],
-    "clientIds" : [ "9e3415b7-7642-460e-bb2d-633a08a824f9" ]
+    "clientIds" : [ "9e3415b7-7642-460e-bb2d-633a08a824f9", "c49ff836-ed28-4810-a21c-4dd6d3715b50" ]
   },
-  "68b633d0-851c-4d22-896a-6106e1440b6f" : {
-    "id" : "68b633d0-851c-4d22-896a-6106e1440b6f",
-    "name" : "satva commercial",
-    "description" : "new residential near tellapur",
-    "startDate" : [ 2025, 5, 12 ],
-    "endDate" : [ 2026, 2, 18 ],
-    "status" : "COMPLETED",
+  "035c7ef0-1a31-4810-9b0a-7deb54be6981" : {
+    "id" : "035c7ef0-1a31-4810-9b0a-7deb54be6981",
+    "name" : "Sattva Knowledge Court",
+    "description" : "A commercial Project in Whitefield",
+    "startDate" : [ 2020, 5, 2 ],
+    "endDate" : [ 2035, 5, 5 ],
+    "status" : "IN_PROGRESS",
     "type" : "COMMERCIAL",
-    "estimatedCost" : 3003000.0,
+    "estimatedCost" : 5000000.0,
     "location" : {
       "city" : "Bangalore",
       "state" : "Karnataka",
-      "zipCode" : "200010",
+      "zipCode" : "300077",
       "country" : "India"
     },
-    "managerId" : "9e3415b7-7642-460e-bb2d-633a08a824f8",
-    "builderIds" : [ "9a0df790-75a5-49f1-91d7-ee613a8ca189" ],
+    "managerId" : "b7907814-ea27-4ead-ae90-469ba5f0fc75",
+    "builderIds" : [ "b7907814-ea27-4ead-ae90-469ba5f0fc74" ],
     "clientIds" : [ ]
   }
 }

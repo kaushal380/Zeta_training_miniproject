@@ -1,8 +1,42 @@
 {
+  "admin@gmail.com" : {
+    "password" : "admin",
+    "user" : {
+      "id" : "b7907814-ea27-4ead-ae90-469ba5f0fc75",
+      "name" : "admin",
+      "phoneNumber" : "9999999999",
+      "email" : "admin@gmail.com",
+      "dateOfBirth" : [ 2000, 1, 1 ],
+      "address" : {
+        "city" : "Bangalore",
+        "state" : "Karnataka",
+        "zipCode" : "560001",
+        "country" : "India"
+      },
+      "role" : "ADMIN"
+    }
+  },
+  "kaushal@gmail.com" : {
+    "password" : "password123",
+    "user" : {
+      "id" : "c49ff836-ed28-4810-a21c-4dd6d3715b50",
+      "name" : "Kaushal Sambanna",
+      "phoneNumber" : "6789012312",
+      "email" : "kaushal@gmail.com",
+      "dateOfBirth" : [ 2005, 12, 1 ],
+      "address" : {
+        "city" : "Bangalore",
+        "state" : "Karnataka",
+        "zipCode" : "100100",
+        "country" : "India"
+      },
+      "role" : "CLIENT"
+    }
+  },
   "test@gmail.com" : {
     "password" : "password",
     "user" : {
-      "id" : "7207b225-f897-4a97-95b2-b3ab97c35aa7",
+      "id" : "b7907814-ea27-4ead-ae90-469ba5f0fc75",
       "name" : "Kaushal",
       "phoneNumber" : "9999999999",
       "email" : "test@gmail.com",
@@ -14,6 +48,23 @@
         "country" : "India"
       },
       "role" : "PROJECT_MANAGER"
+    }
+  },
+  "builder@gmail.com" : {
+    "password" : "builder",
+    "user" : {
+      "id" : "b7907814-ea27-4ead-ae90-469ba5f0fc74",
+      "name" : "builder",
+      "phoneNumber" : "9999999999",
+      "email" : "builder@gmail.com",
+      "dateOfBirth" : [ 2000, 1, 1 ],
+      "address" : {
+        "city" : "Bangalore",
+        "state" : "Karnataka",
+        "zipCode" : "560001",
+        "country" : "India"
+      },
+      "role" : "BUILDER"
     }
   }
 }

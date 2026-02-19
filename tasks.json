@@ -21,6 +21,17 @@
     "assignedBuilderId" : "9a0df790-75a5-49f1-91d7-ee613a8ca189",
     "projectId" : "68b633d0-851c-4d22-896a-6106e1440b6f"
   },
+  "a61ad169-2151-41f7-a9bd-88d8d97906c9" : {
+    "id" : "a61ad169-2151-41f7-a9bd-88d8d97906c9",
+    "taskName" : "knowledge court task 1",
+    "description" : "new task1 for improved layout",
+    "status" : "COMPLETED",
+    "startDate" : [ 2025, 12, 12 ],
+    "endDate" : [ 2026, 2, 19 ],
+    "priority" : null,
+    "assignedBuilderId" : "b7907814-ea27-4ead-ae90-469ba5f0fc74",
+    "projectId" : "035c7ef0-1a31-4810-9b0a-7deb54be6981"
+  },
   "53841313-a33f-4ba9-b097-8907885e488a" : {
     "id" : "53841313-a33f-4ba9-b097-8907885e488a",
     "taskName" : "task2",
