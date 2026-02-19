@@ -1,10 +1,12 @@
 package testRepositories;
 
+import models.Address;
 import models.User;
 import models.UserCredential;
-import models.Address;
 import models.enums.UserRole;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import repositories.UserRepository;
 
 import java.io.File;
@@ -40,8 +42,8 @@ public class TestUserRepository {
                 "Test User",
                 "9999999999",
                 email,
-                LocalDate.of(2000,1,1),
-                new Address("City","State","123","Country"),
+                LocalDate.of(2000, 1, 1),
+                new Address("City", "State", "123", "Country"),
                 UserRole.ADMIN
         );
 
@@ -119,6 +121,7 @@ public class TestUserRepository {
             badRepo.addUser("fail@gmail.com", credential);
         });
     }
+
     @Test
     void testDefaultConstructor() {
         File file = new File("users.json");

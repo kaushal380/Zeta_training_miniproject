@@ -15,7 +15,8 @@ public class ProjectUpdateRequest {
     private ProjectType type;
     private Address location;
 
-    public ProjectUpdateRequest() {}
+    public ProjectUpdateRequest() {
+    }
 
     public String getName() {
         return name;

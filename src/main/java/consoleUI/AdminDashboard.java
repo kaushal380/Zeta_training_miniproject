@@ -8,12 +8,15 @@ import models.User;
 import models.enums.ProjectType;
 import models.enums.UserRole;
 import services.AssignmentService;
-import services.ProjectService;
 import services.AuthenticationService;
+import services.ProjectService;
 import services.UserService;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 public class AdminDashboard {
 
@@ -23,11 +26,7 @@ public class AdminDashboard {
     private final UserService userService;
     private final Scanner scanner;
 
-    public AdminDashboard(ProjectService projectService,
-                          AuthenticationService authService,
-                          AssignmentService assignmentService,
-                          UserService userService,
-                          Scanner scanner) {
+    public AdminDashboard(ProjectService projectService, AuthenticationService authService, AssignmentService assignmentService, UserService userService, Scanner scanner) {
         this.projectService = projectService;
         this.authService = authService;
         this.assignmentService = assignmentService;
@@ -85,11 +84,7 @@ public class AdminDashboard {
 
         int index = 1;
         for (Project project : projects.values()) {
-            System.out.println(index++ + ". "
-                    + project.getName()
-                    + " | " + project.getStatus()
-                    + " | " + project.getType()
-                    + " | Cost: " + project.getEstimatedCost());
+            System.out.println(index++ + ". " + project.getName() + " | " + project.getStatus() + " | " + project.getType() + " | Cost: " + project.getEstimatedCost());
         }
     }
 
@@ -125,9 +120,7 @@ public class AdminDashboard {
             boolean created = projectService.createProject(
                     admin, name, description, startDate, endDate, type, location, cost);
 
-            System.out.println(created
-                    ? "Project created successfully."
-                    : "Project creation failed.");
+            System.out.println(created ? "Project created successfully." : "Project creation failed.");
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -135,8 +128,7 @@ public class AdminDashboard {
 
     private void updateProject(User admin) {
 
-        List<Project> projectList =
-                new ArrayList<>(projectService.viewAllProjects().values());
+        List<Project> projectList = new ArrayList<>(projectService.viewAllProjects().values());
 
         if (projectList.isEmpty()) {
             System.out.println("No projects available.");
@@ -166,8 +158,7 @@ public class AdminDashboard {
             try {
                 LocalDate newEndDate = LocalDate.parse(endInput);
 
-                LocalDate referenceStart =
-                        project.getStartDate();
+                LocalDate referenceStart = project.getStartDate();
 
                 if (!newEndDate.isAfter(referenceStart)) {
                     System.out.println("End date must be after start date. Skipping update.");
@@ -197,12 +188,9 @@ public class AdminDashboard {
         }
 
         try {
-            boolean updated =
-                    projectService.updateProject(admin, project.getId(), request);
+            boolean updated = projectService.updateProject(admin, project.getId(), request);
 
-            System.out.println(updated
-                    ? "Project updated successfully."
-                    : "Update failed.");
+            System.out.println(updated ? "Project updated successfully." : "Update failed.");
 
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -281,8 +269,7 @@ public class AdminDashboard {
         System.out.println("--------------------------------------------------------------------");
 
         for (User user : users) {
-            System.out.printf("%-36s | %-20s | %-15s%n",
-                    user.getId(), user.getName(), user.getRole());
+            System.out.printf("%-36s | %-20s | %-15s%n", user.getId(), user.getName(), user.getRole());
         }
     }
 
@@ -368,7 +355,8 @@ public class AdminDashboard {
                 System.out.print(label + ": ");
                 double value = Double.parseDouble(scanner.nextLine().trim());
                 if (value > 0) return value;
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             System.out.println("Please enter a valid positive number.");
         }
     }
@@ -386,20 +374,28 @@ public class AdminDashboard {
 
         while (true) {
             System.out.println("""
-                Select Project Type:
-                1. RESIDENTIAL
-                2. COMMERCIAL
-                3. GOVERNMENT
-                4. INDUSTRIAL
-                """);
+                    Select Project Type:
+                    1. RESIDENTIAL
+                    2. COMMERCIAL
+                    3. GOVERNMENT
+                    4. INDUSTRIAL
+                    """);
 
             String input = scanner.nextLine().trim();
 
             switch (input) {
-                case "1" -> { return ProjectType.RESIDENTIAL; }
-                case "2" -> { return ProjectType.COMMERCIAL; }
-                case "3" -> { return ProjectType.GOVERNMENT; }
-                case "4" -> { return ProjectType.INDUSTRIAL; }
+                case "1" -> {
+                    return ProjectType.RESIDENTIAL;
+                }
+                case "2" -> {
+                    return ProjectType.COMMERCIAL;
+                }
+                case "3" -> {
+                    return ProjectType.GOVERNMENT;
+                }
+                case "4" -> {
+                    return ProjectType.INDUSTRIAL;
+                }
                 default -> System.out.println("Invalid selection.");
             }
         }

@@ -99,7 +99,8 @@ public class ProjectRepository {
         }
 
         try {
-            Map<String, Project> fileProjects = objectMapper.readValue(file, new TypeReference<Map<String, Project>>() {});
+            Map<String, Project> fileProjects = objectMapper.readValue(file, new TypeReference<Map<String, Project>>() {
+            });
 
             projects.putAll(fileProjects);
 

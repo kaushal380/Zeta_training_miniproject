@@ -2,7 +2,6 @@ package testsuite;
 
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
-
 import testRepositories.TestProjectRepository;
 import testRepositories.TestTaskRepository;
 import testRepositories.TestUserRepository;

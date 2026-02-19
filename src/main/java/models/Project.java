@@ -21,7 +21,7 @@ public class Project {
     private String managerId;
 
     private List<String> builderIds = new ArrayList<>();
-    private List<String> clientIds = new ArrayList<>();
+    private final List<String> clientIds = new ArrayList<>();
 
 
     public Project() {
@@ -49,9 +49,13 @@ public class Project {
         this.builderIds = new ArrayList<>();
     }
 
-    public Address getLocation() {return location;}
+    public Address getLocation() {
+        return location;
+    }
 
-    public void setLocation(Address location) {this.location = location;}
+    public void setLocation(Address location) {
+        this.location = location;
+    }
 
     public String getId() {
         return id;

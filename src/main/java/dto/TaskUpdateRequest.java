@@ -29,37 +29,36 @@ public class TaskUpdateRequest {
         return description;
     }
 
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public Priority getPriority() {
-        return priority;
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
+    public Priority getPriority() {
+        return priority;
+    }
+
     public void setPriority(Priority priority) {
         this.priority = priority;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
     }
 
     public void setStatus(TaskStatus status) {

@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class TaskRepository {
 
@@ -124,7 +123,8 @@ public class TaskRepository {
 
         synchronized (lock) {
             try {
-                Map<String, Task> fileTasks = objectMapper.readValue(file, new TypeReference<Map<String, Task>>() {});
+                Map<String, Task> fileTasks = objectMapper.readValue(file, new TypeReference<Map<String, Task>>() {
+                });
                 tasks.putAll(fileTasks);
 
             } catch (IOException e) {

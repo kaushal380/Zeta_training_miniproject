@@ -1,7 +1,7 @@
 package models;
 
-import models.enums.TaskStatus;
 import models.enums.Priority;
+import models.enums.TaskStatus;
 
 import java.time.LocalDate;
 
@@ -45,68 +45,68 @@ public class Task {
         return id;
     }
 
-    public String getTaskName() {
-        return taskName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public Priority getPriority() {
-        return priority;
-    }
-
-    public String getAssignedBuilderId() {
-        return assignedBuilderId;
-    }
-
-    public String getProjectId() {
-        return projectId;
-    }
-
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getTaskName() {
+        return taskName;
     }
 
     public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
     }
 
     public void setStatus(TaskStatus status) {
         this.status = status;
     }
 
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
+    public Priority getPriority() {
+        return priority;
+    }
+
     public void setPriority(Priority priority) {
         this.priority = priority;
     }
 
+    public String getAssignedBuilderId() {
+        return assignedBuilderId;
+    }
+
     public void setAssignedBuilderId(String assignedBuilderId) {
         this.assignedBuilderId = assignedBuilderId;
+    }
+
+    public String getProjectId() {
+        return projectId;
     }
 
     public void setProjectId(String projectId) {

@@ -16,9 +16,7 @@ public class ClientDashboard {
     private final AssignmentService assignmentService;
     private final Scanner scanner;
 
-    public ClientDashboard(ProjectService projectService,
-                           AssignmentService assignmentService,
-                           Scanner scanner) {
+    public ClientDashboard(ProjectService projectService, AssignmentService assignmentService, Scanner scanner) {
         this.projectService = projectService;
         this.assignmentService = assignmentService;
         this.scanner = scanner;
@@ -67,11 +65,7 @@ public class ClientDashboard {
         int index = 1;
 
         for (Project project : projects.values()) {
-            System.out.println(index + ". "
-                    + project.getName()
-                    + " | Type: " + project.getType()
-                    + " | Status: " + project.getStatus()
-                    + " | Cost: " + project.getEstimatedCost());
+            System.out.println(index + ". " + project.getName() + " | Type: " + project.getType() + " | Status: " + project.getStatus() + " | Cost: " + project.getEstimatedCost());
             index++;
         }
 
@@ -97,10 +91,7 @@ public class ClientDashboard {
 
         int index = 1;
         for (Project project : purchased) {
-            System.out.println(index + ". "
-                    + project.getName()
-                    + " | Status: " + project.getStatus()
-                    + " | Type: " + project.getType());
+            System.out.println(index + ". " + project.getName() + " | Status: " + project.getStatus() + " | Type: " + project.getType());
             index++;
         }
 
@@ -126,10 +117,7 @@ public class ClientDashboard {
 
         for (int i = 0; i < available.size(); i++) {
             Project p = available.get(i);
-            System.out.println((i + 1) + ". "
-                    + p.getName()
-                    + " | Type: " + p.getType()
-                    + " | Cost: " + p.getEstimatedCost());
+            System.out.println((i + 1) + ". " + p.getName() + " | Type: " + p.getType() + " | Cost: " + p.getEstimatedCost());
         }
 
         int choice;

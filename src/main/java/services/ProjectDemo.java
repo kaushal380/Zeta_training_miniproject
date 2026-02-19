@@ -8,7 +8,6 @@ import models.enums.ProjectStatus;
 import models.enums.ProjectType;
 import models.enums.UserRole;
 import repositories.ProjectRepository;
-import services.ProjectService;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -144,7 +143,6 @@ public class ProjectDemo {
         System.out.println("Deleted by Admin: " + deleted);
 
         System.out.println("\n========== FINAL PROJECT LIST ==========");
-        projectService.viewAllProjects()
-                .forEach((id, p) -> System.out.println(p));
+        projectService.viewAllProjects().forEach((id, p) -> System.out.println(p));
     }
 }

@@ -49,9 +49,7 @@ public class AuthenticationDashboard {
         return null;
     }
 
-    public static User handleRegister(AuthenticationService authService,
-                                      Scanner scanner,
-                                      boolean admin) {
+    public static User handleRegister(AuthenticationService authService, Scanner scanner, boolean admin) {
 
         System.out.println("\n========== REGISTER USER ==========");
 
@@ -192,15 +190,7 @@ public class AuthenticationDashboard {
             default -> UserRole.CLIENT;
         };
 
-        User user = authService.register(
-                name,
-                phone,
-                email,
-                password,
-                dob,
-                address,
-                role
-        );
+        User user = authService.register(name, phone, email, password, dob, address, role);
 
         if (user != null) {
             System.out.println("Registration successful. Welcome, " + user.getName() + "!");
@@ -211,8 +201,7 @@ public class AuthenticationDashboard {
         return null;
     }
 
-    public static User authenticate(AuthenticationService authService,
-                                    Scanner scanner) {
+    public static User authenticate(AuthenticationService authService, Scanner scanner) {
 
         while (true) {
 

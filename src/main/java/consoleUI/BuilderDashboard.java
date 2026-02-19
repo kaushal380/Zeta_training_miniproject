@@ -7,14 +7,13 @@ import models.enums.TaskStatus;
 import services.ProjectService;
 import services.TaskService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class BuilderDashboard {
 
-    public static void start(User builder,
-                             TaskService taskService,
-                             ProjectService projectService,
-                             Scanner scanner) {
+    public static void start(User builder, TaskService taskService, ProjectService projectService, Scanner scanner) {
 
         while (true) {
 
@@ -32,7 +31,9 @@ public class BuilderDashboard {
                     case "1" -> viewMyProjects(builder, projectService);
                     case "2" -> viewMyTasks(builder, taskService);
                     case "3" -> updateTaskStatus(builder, taskService, scanner);
-                    case "4" -> { return; }
+                    case "4" -> {
+                        return;
+                    }
                     default -> System.out.println("Invalid option.");
                 }
             } catch (Exception e) {
@@ -41,8 +42,7 @@ public class BuilderDashboard {
         }
     }
 
-    private static void viewMyProjects(User builder,
-                                       ProjectService projectService) {
+    private static void viewMyProjects(User builder, ProjectService projectService) {
 
         List<Project> myProjects = new ArrayList<>();
 
@@ -61,22 +61,16 @@ public class BuilderDashboard {
 
         for (int i = 0; i < myProjects.size(); i++) {
             Project p = myProjects.get(i);
-            System.out.println((i + 1) + ". "
-                    + p.getName()
-                    + " | Status: " + p.getStatus());
+            System.out.println((i + 1) + ". " + p.getName() + " | Status: " + p.getStatus());
         }
     }
 
-    private static List<Task> getMyTasks(User builder,
-                                         TaskService taskService) {
+    private static List<Task> getMyTasks(User builder, TaskService taskService) {
 
-        return new ArrayList<>(
-                taskService.viewTasksByBuilder(builder.getId()).values()
-        );
+        return new ArrayList<>(taskService.viewTasksByBuilder(builder.getId()).values());
     }
 
-    private static void viewMyTasks(User builder,
-                                    TaskService taskService) {
+    private static void viewMyTasks(User builder, TaskService taskService) {
 
         List<Task> tasks = getMyTasks(builder, taskService);
 
@@ -89,15 +83,11 @@ public class BuilderDashboard {
 
         for (int i = 0; i < tasks.size(); i++) {
             Task t = tasks.get(i);
-            System.out.println((i + 1) + ". "
-                    + t.getDescription()
-                    + " | Status: " + t.getStatus());
+            System.out.println((i + 1) + ". " + t.getDescription() + " | Status: " + t.getStatus());
         }
     }
 
-    private static void updateTaskStatus(User builder,
-                                         TaskService taskService,
-                                         Scanner scanner) {
+    private static void updateTaskStatus(User builder, TaskService taskService, Scanner scanner) {
 
         List<Task> tasks = getMyTasks(builder, taskService);
 
@@ -121,11 +111,7 @@ public class BuilderDashboard {
 
         TaskStatus status = selectStatus(scanner);
 
-        boolean updated = taskService.updateTaskStatus(
-                builder,
-                selectedTask.getId(),
-                status
-        );
+        boolean updated = taskService.updateTaskStatus(builder, selectedTask.getId(), status);
 
         if (updated) {
             System.out.println("Task status updated successfully.");
@@ -156,17 +142,21 @@ public class BuilderDashboard {
         while (true) {
 
             System.out.println("""
-                Select Status:
-                1. IN_PROGRESS
-                2. COMPLETED
-                """);
+                    Select Status:
+                    1. IN_PROGRESS
+                    2. COMPLETED
+                    """);
 
             System.out.print("Choose option: ");
             String input = scanner.nextLine().trim();
 
             switch (input) {
-                case "1" -> { return TaskStatus.IN_PROGRESS; }
-                case "2" -> { return TaskStatus.COMPLETED; }
+                case "1" -> {
+                    return TaskStatus.IN_PROGRESS;
+                }
+                case "2" -> {
+                    return TaskStatus.COMPLETED;
+                }
                 default -> System.out.println("Invalid choice.");
             }
         }

@@ -1,6 +1,5 @@
 package consoleUI.inputValidators;
 
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class InputValidator {
@@ -18,8 +17,4 @@ public class InputValidator {
             System.out.println("Please enter a valid number.");
         }
     }
-
-
-
-
 }

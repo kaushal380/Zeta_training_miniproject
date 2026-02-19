@@ -3,7 +3,6 @@ package services;
 import models.Address;
 import models.Project;
 import models.User;
-import models.enums.ProjectStatus;
 import models.enums.ProjectType;
 import models.enums.UserRole;
 import repositories.ProjectRepository;

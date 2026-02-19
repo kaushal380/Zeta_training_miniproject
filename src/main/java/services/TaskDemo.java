@@ -9,10 +9,7 @@ import models.enums.TaskStatus;
 import models.enums.UserRole;
 import repositories.TaskRepository;
 import repositories.UserRepository;
-import services.AuthenticationService;
-import services.TaskService;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -50,7 +47,7 @@ public class TaskDemo {
 
         System.out.println("\n===== CREATE TASK =====");
 
-        boolean created = taskService.createTask(manager, "Foundation Work","Foundation phase work", LocalDate.now(), LocalDate.now().plusDays(7), "P1");
+        boolean created = taskService.createTask(manager, "Foundation Work", "Foundation phase work", LocalDate.now(), LocalDate.now().plusDays(7), "P1");
 
         System.out.println("Task Created: " + created);
 

@@ -8,7 +8,6 @@ import repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class UserService {
 
@@ -45,7 +44,7 @@ public class UserService {
 
     public List<User> getAllUsers(User admin) {
 
-        if (admin.getRole() != UserRole.ADMIN){
+        if (admin.getRole() != UserRole.ADMIN) {
             throw new RuntimeException("Only admin can view all the users");
         }
 
@@ -70,7 +69,7 @@ public class UserService {
 
     public boolean deleteUser(String email, User user) {
 
-        if(user.getRole() != UserRole.ADMIN){
+        if (user.getRole() != UserRole.ADMIN) {
             throw new RuntimeException("Only admin can delete a user");
         }
 

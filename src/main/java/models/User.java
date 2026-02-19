@@ -2,7 +2,6 @@ package models;
 
 import models.enums.UserRole;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
 
 public class User {
@@ -15,50 +14,10 @@ public class User {
     private Address address;
     private UserRole role;
 
-    public void setRole(UserRole role) {
-        this.role = role;
+    public User() {
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public User() {}
-
-    public User(String id, String name, String phoneNumber, String email,
-                LocalDate dateOfBirth, Address address, UserRole role) {
+    public User(String id, String name, String phoneNumber, String email, LocalDate dateOfBirth, Address address, UserRole role) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -68,9 +27,61 @@ public class User {
         this.role = role;
     }
 
-    public String getId() { return id; }
-    public String getEmail() { return email; }
-    public UserRole getRole() { return role; }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String number) {
+        this.id = number;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
 
     @Override
     public String toString() {
@@ -78,9 +89,5 @@ public class User {
                 "\nName: " + name +
                 "\nEmail: " + email +
                 "\nRole: " + role;
-    }
-
-    public void setId(String number) {
-        this.id = number;
     }
 }

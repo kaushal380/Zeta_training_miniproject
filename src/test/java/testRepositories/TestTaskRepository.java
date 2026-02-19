@@ -3,7 +3,9 @@ package testRepositories;
 import models.Task;
 import models.enums.Priority;
 import models.enums.TaskStatus;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import repositories.TaskRepository;
 
 import java.io.File;
@@ -157,7 +159,9 @@ public class TestTaskRepository {
 
         Files.writeString(new File(TEST_FILE).toPath(), "INVALID_JSON");
 
-        assertThrows(RuntimeException.class, () -> {new TaskRepository(TEST_FILE);});
+        assertThrows(RuntimeException.class, () -> {
+            new TaskRepository(TEST_FILE);
+        });
     }
 
     @Test
@@ -167,6 +171,8 @@ public class TestTaskRepository {
 
         Task task = createTask("1", "P1", "B1");
 
-        assertThrows(RuntimeException.class, () -> {badRepo.addTask("1", task);});
+        assertThrows(RuntimeException.class, () -> {
+            badRepo.addTask("1", task);
+        });
     }
 }

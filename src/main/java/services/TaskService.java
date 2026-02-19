@@ -5,7 +5,6 @@ import models.Task;
 import models.User;
 import models.enums.TaskStatus;
 import models.enums.UserRole;
-import repositories.ProjectRepository;
 import repositories.TaskRepository;
 
 import java.time.LocalDate;
@@ -33,7 +32,6 @@ public class TaskService {
         if (user.getRole() != UserRole.PROJECT_MANAGER) {
             throw new RuntimeException("Only Project Manager can create tasks");
         }
-
 
 
         String id = UUID.randomUUID().toString();
